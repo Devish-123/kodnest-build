@@ -30,6 +30,7 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group";
+import ContextHeader from "@/components/ContextHeader";
 import { jobs } from "@/data/jobs";
 import { useSavedJobs } from "@/hooks/use-saved-jobs";
 import { usePreferences } from "@/hooks/use-preferences";
@@ -260,16 +261,12 @@ const Dashboard = () => {
   ]);
 
   return (
-    <div className="flex flex-1 flex-col px-sp-4 py-sp-5">
+    <div className="flex flex-1 flex-col px-sp-4 py-sp-4">
       <div className="mx-auto w-full max-w-5xl space-y-sp-4">
-        <div className="flex flex-col gap-sp-1">
-          <h1 className="font-heading text-2xl font-semibold text-foreground">
-            Job Notification Tracker
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Manage and track job applications with intelligent matching
-          </p>
-        </div>
+        <ContextHeader
+          title="Job Notification Tracker"
+          description="Manage and track job applications with intelligent matching"
+        />
 
         {!hasSetPreferences && (
           <div className="flex items-center justify-between gap-sp-3 rounded-md border border-warning/30 bg-warning/10 px-sp-3 py-sp-2 text-sm">
@@ -425,7 +422,7 @@ const Dashboard = () => {
             <p className="font-medium text-foreground">
               No roles match your criteria.
             </p>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-sp-1 text-sm text-muted-foreground max-w-prose">
               Adjust filters or lower threshold.
             </p>
           </div>

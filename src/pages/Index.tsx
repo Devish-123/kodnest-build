@@ -11,16 +11,16 @@ const Index = () => {
         <h1 className="font-heading text-4xl font-semibold leading-tight md:text-5xl text-foreground">
           Stop Missing The Right Jobs.
         </h1>
-        <p className="mx-auto mt-sp-3 text-lg text-muted-foreground">
+        <p className="mx-auto mt-sp-3 text-lg text-muted-foreground max-w-prose">
           Precision-matched job discovery delivered daily at 9AM.
         </p>
         <Button
           size="lg"
-          className="mt-sp-4"
+          className="mt-sp-4 gap-sp-1"
           onClick={() => navigate("/settings")}
         >
           Start Tracking
-          <ArrowRight className="ml-1 h-4 w-4" />
+          <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
     </div>

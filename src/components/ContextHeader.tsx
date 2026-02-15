@@ -1,18 +1,36 @@
+import { cn } from "@/lib/utils";
+
 interface ContextHeaderProps {
-  headline: string;
-  subtext: string;
+  title: string;
+  description?: string;
+  actions?: React.ReactNode;
+  className?: string;
 }
 
-const ContextHeader = ({ headline, subtext }: ContextHeaderProps) => {
+const ContextHeader = ({ 
+  title, 
+  description, 
+  actions,
+  className 
+}: ContextHeaderProps) => {
   return (
-    <section className="px-sp-4 pt-sp-5 pb-sp-4">
-      <h1 className="font-heading text-3xl font-semibold tracking-tight text-foreground">
-        {headline}
-      </h1>
-      <p className="mt-sp-1 text-base text-muted-foreground max-w-2xl">
-        {subtext}
-      </p>
-    </section>
+    <div className={cn("flex flex-col gap-sp-1", className)}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-sp-2">
+        <h1 className="font-heading text-2xl font-semibold text-foreground">
+          {title}
+        </h1>
+        {actions && (
+          <div className="flex items-center gap-sp-2">
+            {actions}
+          </div>
+        )}
+      </div>
+      {description && (
+        <p className="text-sm text-muted-foreground max-w-prose">
+          {description}
+        </p>
+      )}
+    </div>
   );
 };
 

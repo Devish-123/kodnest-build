@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bookmark, ExternalLink, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,13 +20,13 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group";
+import ContextHeader from "@/components/ContextHeader";
 import { jobs } from "@/data/jobs";
 import { useSavedJobs } from "@/hooks/use-saved-jobs";
 import { useJobStatus, type JobStatus, STATUSES } from "@/hooks/use-job-status";
 import { getStatusToggleClass } from "@/lib/status-utils";
 import { toast } from "sonner";
 import type { Job } from "@/types/job";
-import { useState } from "react";
 
 function formatPostedDays(ago: number): string {
   if (ago === 0) return "Today";
@@ -138,7 +138,7 @@ const Saved = () => {
           <h2 className="mt-sp-4 font-heading text-2xl font-semibold text-foreground">
             No saved jobs yet
           </h2>
-          <p className="mt-sp-2 text-muted-foreground leading-relaxed">
+          <p className="mt-sp-2 text-muted-foreground max-w-prose">
             Save jobs from the Dashboard to keep them here for quick access.
             Your saved list is stored locally and stays private.
           </p>
@@ -155,14 +155,12 @@ const Saved = () => {
   }
 
   return (
-    <div className="flex flex-1 flex-col px-sp-4 py-sp-5">
+    <div className="flex flex-1 flex-col px-sp-4 py-sp-4">
       <div className="mx-auto w-full max-w-5xl space-y-sp-4">
-        <div className="flex flex-col gap-sp-1">
-          <h1 className="font-heading text-2xl font-semibold text-foreground">Saved jobs</h1>
-          <p className="text-sm text-muted-foreground">
-            {savedJobs.length} job{savedJobs.length !== 1 ? "s" : ""} saved
-          </p>
-        </div>
+        <ContextHeader
+          title="Saved Jobs"
+          description={`${savedJobs.length} job${savedJobs.length !== 1 ? "s" : ""} saved`}
+        />
 
         <div className="grid gap-sp-3 sm:grid-cols-2 lg:grid-cols-3">
           {savedJobs.map((job) => (

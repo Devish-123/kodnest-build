@@ -2,8 +2,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ContextHeader from "@/components/ContextHeader";
 import { useTestChecklist } from "@/hooks/use-test-checklist";
-import { RotateCcw, CheckCircle2, ClipboardList } from "lucide-react";
+import { RotateCcw, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const TestChecklist = () => {
@@ -19,21 +20,14 @@ const TestChecklist = () => {
   } = useTestChecklist();
 
   return (
-    <div className="flex flex-1 flex-col px-sp-4 py-sp-5">
-      <div className="mx-auto w-full max-w-2xl">
-        <div className="mb-sp-4 flex items-center gap-sp-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-            <ClipboardList className="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h1 className="font-heading text-2xl font-semibold text-foreground">Test Checklist</h1>
-            <p className="text-sm text-muted-foreground">
-              Complete all tests before shipping
-            </p>
-          </div>
-        </div>
+    <div className="flex flex-1 flex-col px-sp-4 py-sp-4">
+      <div className="mx-auto w-full max-w-2xl space-y-sp-4">
+        <ContextHeader
+          title="Test Checklist"
+          description="Complete all tests before shipping"
+        />
 
-        <Card className="mb-sp-4">
+        <Card>
           <CardHeader className="pb-sp-2">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-medium text-foreground">Progress</CardTitle>
@@ -63,7 +57,7 @@ const TestChecklist = () => {
                 variant="outline"
                 size="sm"
                 onClick={reset}
-                className="gap-2"
+                className="gap-sp-1"
               >
                 <RotateCcw className="h-4 w-4" />
                 Reset
@@ -81,7 +75,7 @@ const TestChecklist = () => {
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-start gap-sp-2 rounded-md border border-border p-sp-2 transition-colors duration-180 ease-in-out hover:bg-muted/50"
+                  className="flex items-start gap-sp-2 rounded-md border border-border p-sp-2 transition-colors duration-kn-base ease-in-out hover:bg-muted/50"
                 >
                   <Checkbox
                     id={`test-${item.id}`}
@@ -101,7 +95,7 @@ const TestChecklist = () => {
           </CardContent>
         </Card>
 
-        <div className="mt-sp-4 flex justify-end">
+        <div className="flex justify-end">
           <Button asChild disabled={!allChecked} variant={allChecked ? "default" : "secondary"}>
             <Link to="/jt/08-ship">
               {allChecked ? "Proceed to Ship" : "Complete all tests to proceed"}

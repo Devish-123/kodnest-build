@@ -12,9 +12,11 @@ import { Mail, Copy, RefreshCw, Briefcase, MapPin, Building2, Sparkles } from "l
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 
+type DigestJob = Job & { matchScore: number };
+
 const Digest = () => {
   const { preferences, hasPreferences } = usePreferences();
-  const [digest, setDigest] = useState<Job[] | null>(null);
+  const [digest, setDigest] = useState<DigestJob[] | null>(null);
   const [generatedDate, setGeneratedDate] = useState<string>("");
 
   // Get today's date string YYYY-MM-DD
@@ -44,22 +46,19 @@ const Digest = () => {
       return;
     }
 
-    // 1. Calculate scores
-    const scoredJobs = jobs.map((job) => ({
+    // 1. Calculate scores and create DigestJobs with persisted match scores
+    const scoredJobs: DigestJob[] = jobs.map((job) => ({
       ...job,
-      score: computeMatchScore(job, preferences),
+      matchScore: computeMatchScore(job, preferences),
     }));
 
     // 2. Filter & Sort
-    // Filter out 0 scores or modify threshold as needed. 
-    // Requirement says "top 10 jobs sorted by matchScore desc, postedDaysAgo asc"
-    // We'll keep even low scores if they are the best available, unless 0 implies no match at all?
-    // Let's filter score > 0 to be relevant.
-    const relevantJobs = scoredJobs.filter((j) => j.score > 0);
+    // Filter out jobs with 0 match score
+    const relevantJobs = scoredJobs.filter((j) => j.matchScore > 0);
 
     relevantJobs.sort((a, b) => {
-      if (b.score !== a.score) {
-        return b.score - a.score; // Descending match score
+      if (b.matchScore !== a.matchScore) {
+        return b.matchScore - a.matchScore; // Descending match score
       }
       return a.postedDaysAgo - b.postedDaysAgo; // Ascending posted days (fresher first)
     });
@@ -67,28 +66,37 @@ const Digest = () => {
     // 3. Take top 10
     const top10 = relevantJobs.slice(0, 10);
 
-    if (top10.length === 0) {
-      toast.info("No matching jobs found today. Try broadening your preferences.");
-      return;
-    }
-
-    // 4. Store
+    // 4. Store digest (even if empty) and update state
     const today = getTodayDateString();
     localStorage.setItem(`jobTrackerDigest_${today}`, JSON.stringify(top10));
     setDigest(top10);
-    toast.success("Today's digest generated!");
+    
+    if (top10.length === 0) {
+      toast.info("No matching jobs found today. Try broadening your preferences.");
+    } else {
+      toast.success("Today's digest generated!");
+    }
   };
 
   const handleCopy = () => {
     if (!digest) return;
+    
+    if (digest.length === 0) {
+      const emptyText = `My 9AM Job Digest - ${generatedDate}\n\nNo matching roles today. Try broadening your preferences.`;
+      navigator.clipboard.writeText(emptyText).then(() => {
+        toast.success("Digest copied to clipboard");
+      });
+      return;
+    }
+    
     const text = digest
       .map(
         (job, i) =>
-          `${i + 1}. ${job.title} at ${job.company}\n   Location: ${job.location} | Match: ${computeMatchScore(job, preferences)}%\n   Link: ${job.applyUrl}\n`
+          `${i + 1}. ${job.title} at ${job.company}\n   Location: ${job.location}\n   Experience: ${job.experience}\n   Match Score: ${job.matchScore}%\n   Apply: ${job.applyUrl}\n`
       )
       .join("\n");
     
-    const header = `My Job Digest - ${generatedDate}\n\n`;
+    const header = `My 9AM Job Digest - ${generatedDate}\n\n`;
     navigator.clipboard.writeText(header + text).then(() => {
       toast.success("Digest copied to clipboard");
     });
@@ -96,15 +104,23 @@ const Digest = () => {
 
   const handleEmail = () => {
     if (!digest) return;
-    const subject = encodeURIComponent(`My 9AM Job Digest - ${generatedDate}`);
+    
+    const subject = encodeURIComponent("My 9AM Job Digest");
+    
+    if (digest.length === 0) {
+      const body = encodeURIComponent(`My 9AM Job Digest - ${generatedDate}\n\nNo matching roles today. Try broadening your preferences.`);
+      window.open(`mailto:?subject=${subject}&body=${body}`);
+      return;
+    }
+    
     const bodyText = digest
       .map(
         (job, i) =>
-          `${i + 1}. ${job.title} at ${job.company}%0D%0ALocation: ${job.location} | Match: ${computeMatchScore(job, preferences)}%%0D%0ALink: ${job.applyUrl}%0D%0A`
+          `${i + 1}. ${job.title} at ${job.company}%0D%0ALocation: ${job.location}%0D%0AExperience: ${job.experience}%0D%0AMatch Score: ${job.matchScore}%%0D%0AApply: ${job.applyUrl}%0D%0A`
       )
       .join("%0D%0A");
     
-    const body = encodeURIComponent(`Here is my job digest for today:\n\n`) + bodyText;
+    const body = encodeURIComponent(`My 9AM Job Digest - ${generatedDate}\n\n`) + bodyText;
     window.open(`mailto:?subject=${subject}&body=${body}`);
   };
 
@@ -150,26 +166,24 @@ const Digest = () => {
           
           <Button size="lg" onClick={generateDigest} className="gap-2 px-8">
             <Mail className="h-5 w-5" />
-            Generate Digest (Simulated)
+            Generate Today's 9AM Digest (Simulated)
           </Button>
 
           <p className="mt-8 text-xs text-muted-foreground/60">
-            Demo Mode: Daily 9AM trigger simulated manually. 
-            <br />
-            Digest persists for the rest of the day.
+            Demo Mode: Daily 9AM trigger simulated manually.
           </p>
         </div>
       </div>
     );
   }
 
-  // State 3: Digest View
+  // State 3: Digest View (including empty digest state)
   return (
     <div className="container max-w-4xl py-8 animate-fade-in space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Top 10 Jobs For You</h1>
-          <p className="text-muted-foreground">9AM Digest — {generatedDate}</p>
+          <h1 className="text-3xl font-bold tracking-tight">Your 9AM Job Digest</h1>
+          <p className="text-muted-foreground">Daily personalized matches — {generatedDate}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleCopy} className="gap-2">
@@ -184,75 +198,95 @@ const Digest = () => {
       </div>
 
       <div className="bg-card rounded-xl border shadow-sm overflow-hidden">
-        <div className="bg-muted/30 p-4 border-b">
-          <p className="text-sm text-center text-muted-foreground font-medium">
-             Hand-picked based on your preferences
+        <div className="bg-muted/30 p-6 border-b text-center">
+          <h2 className="text-xl font-semibold mb-1">9AM Digest — {generatedDate}</h2>
+          <p className="text-sm text-muted-foreground">
+            {digest.length === 0 
+              ? "No matching roles today" 
+              : "Your top personalized job matches, delivered daily"}
           </p>
         </div>
 
-        <ScrollArea className="h-[calc(100vh-250px)]">
-          <div className="p-6 space-y-6">
-            {digest.map((job, index) => {
-              const score = computeMatchScore(job, preferences);
-              return (
-                <div key={job.id} className="group relative bg-white dark:bg-zinc-950 border rounded-lg p-5 transition-all hover:shadow-md hover:border-primary/20">
-                  <div className="absolute -left-3 top-6 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold shadow-sm z-10">
-                    {index + 1}
-                  </div>
-                  
-                  <div className="flex flex-col md:flex-row gap-4 justify-between">
-                    <div className="space-y-2">
-                      <div className="flex items-start justify-between md:justify-start gap-3">
-                         <h3 className="font-semibold text-lg leading-none">{job.title}</h3>
-                         <Badge variant={score >= 80 ? "default" : "secondary"} className="h-5 text-[10px]">
-                           {score}% Match
-                         </Badge>
-                      </div>
-                      
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Building2 className="h-3.5 w-3.5" />
-                        <span>{job.company}</span>
-                        <span>•</span>
-                        <MapPin className="h-3.5 w-3.5" />
-                        <span>{job.location} ({job.mode})</span>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {job.skills.slice(0, 4).map(skill => (
-                          <Badge key={skill} variant="outline" className="text-xs font-normal">
-                            {skill}
-                          </Badge>
-                        ))}
-                        {job.skills.length > 4 && (
-                          <span className="text-xs text-muted-foreground self-center">+{job.skills.length - 4}</span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col items-start md:items-end justify-between gap-3 min-w-[140px]">
-                       <div className="text-xs text-muted-foreground">
-                         Posted {job.postedDaysAgo === 0 ? "Today" : `${job.postedDaysAgo}d ago`}
-                       </div>
-                       <Button size="sm" className="w-full md:w-auto" asChild>
-                         <a href={job.applyUrl} target="_blank" rel="noopener noreferrer">Apply Now</a>
-                       </Button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-            
-            {digest.length === 0 && (
-                <div className="text-center py-12 text-muted-foreground">
-                    No matches found today. Try adjusting your preferences.
-                </div>
-            )}
+        {digest.length === 0 ? (
+          <div className="p-12 text-center space-y-4">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+              <Briefcase className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-2">No matching roles today</h3>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                We couldn't find any jobs matching your current preferences. Try broadening your criteria in settings.
+              </p>
+            </div>
+            <Button variant="outline" asChild className="mt-4">
+              <Link to="/settings">Adjust Preferences</Link>
+            </Button>
           </div>
-        </ScrollArea>
+        ) : (
+          <ScrollArea className="h-[calc(100vh-280px)]">
+            <div className="p-6 space-y-4">
+              {digest.map((job, index) => {
+                return (
+                  <div key={job.id} className="group relative bg-white dark:bg-zinc-950 border rounded-lg p-5 transition-all hover:shadow-md hover:border-primary/20">
+                    <div className="absolute -left-3 top-6 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold shadow-sm z-10">
+                      {index + 1}
+                    </div>
+                    
+                    <div className="flex flex-col md:flex-row gap-4 justify-between">
+                      <div className="space-y-2 flex-1">
+                        <div className="flex items-start justify-between md:justify-start gap-3 flex-wrap">
+                           <h3 className="font-semibold text-lg leading-tight">{job.title}</h3>
+                           <Badge variant={job.matchScore >= 80 ? "default" : "secondary"} className="text-xs shrink-0">
+                             {job.matchScore}% Match
+                           </Badge>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
+                          <Building2 className="h-3.5 w-3.5" />
+                          <span>{job.company}</span>
+                          <span>•</span>
+                          <MapPin className="h-3.5 w-3.5" />
+                          <span>{job.location}</span>
+                          <span>•</span>
+                          <span>{job.mode}</span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Briefcase className="h-3.5 w-3.5" />
+                          <span>Experience: {job.experience} years</span>
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {job.skills.slice(0, 5).map(skill => (
+                            <Badge key={skill} variant="outline" className="text-xs font-normal">
+                              {skill}
+                            </Badge>
+                          ))}
+                          {job.skills.length > 5 && (
+                            <span className="text-xs text-muted-foreground self-center">+{job.skills.length - 5} more</span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-start md:items-end justify-between gap-3 md:min-w-[140px]">
+                         <div className="text-xs text-muted-foreground">
+                           Posted {job.postedDaysAgo === 0 ? "today" : `${job.postedDaysAgo}d ago`}
+                         </div>
+                         <Button size="sm" className="w-full md:w-auto" asChild>
+                           <a href={job.applyUrl} target="_blank" rel="noopener noreferrer">Apply Now</a>
+                         </Button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollArea>
+        )}
         
         <div className="bg-muted/30 p-4 border-t text-center">
            <p className="text-xs text-muted-foreground">
-             This digest was generated based on your preferences. Jobs are simulated for demo purposes.
+             Demo Mode: This digest was generated based on your preferences. Jobs are simulated for demonstration purposes.
            </p>
         </div>
       </div>

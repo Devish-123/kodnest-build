@@ -17,7 +17,7 @@ const AppNavbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <nav className="border-b bg-background">
+    <nav className="border-b border-border bg-background">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-sp-4 py-sp-2">
         <NavLink
           to="/"
@@ -32,8 +32,8 @@ const AppNavbar = () => {
             <li key={item.to}>
               <NavLink
                 to={item.to}
-                className="text-sm text-muted-foreground transition-colors duration-base ease-base hover:text-foreground"
-                activeClassName="text-primary border-b-2 border-primary pb-1"
+                className="text-sm text-muted-foreground transition-colors duration-180 ease-in-out hover:text-foreground"
+                activeClassName="text-primary font-medium"
               >
                 {item.label}
               </NavLink>
@@ -55,12 +55,12 @@ const AppNavbar = () => {
 
       {/* Mobile nav */}
       {mobileOpen && (
-        <ul className="border-t px-sp-4 py-sp-2 md:hidden">
+        <ul className="border-t border-border px-sp-4 py-sp-2 md:hidden">
           {navItems.map((item) => (
             <li key={item.to}>
               <NavLink
                 to={item.to}
-                className="block py-sp-1 text-sm text-muted-foreground transition-colors duration-base ease-base hover:text-foreground"
+                className="block py-sp-1 text-sm text-muted-foreground transition-colors duration-180 ease-in-out hover:text-foreground"
                 activeClassName="text-primary font-medium"
                 onClick={() => setMobileOpen(false)}
               >

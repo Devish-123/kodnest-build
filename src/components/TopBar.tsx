@@ -8,15 +8,15 @@ interface TopBarProps {
 }
 
 const statusStyles: Record<TopBarProps["status"], string> = {
-  "Not Started": "bg-muted text-muted-foreground",
+  "Not Started": "bg-muted text-muted-foreground border-border",
   "In Progress": "bg-warning/15 text-warning-foreground border-warning/30",
-  "Shipped": "bg-success/15 text-success border-success/30",
+  "Shipped": "bg-success/15 text-success-foreground border-success/30",
 };
 
 const TopBar = ({ projectName, currentStep, totalSteps, status }: TopBarProps) => {
   return (
-    <header className="flex items-center justify-between border-b px-sp-4 py-sp-2">
-      <span className="font-heading text-base font-semibold tracking-tight">
+    <header className="flex items-center justify-between border-b border-border bg-background px-sp-4 py-sp-2">
+      <span className="font-heading text-base font-semibold tracking-tight text-foreground">
         {projectName}
       </span>
       <span className="text-sm text-muted-foreground">

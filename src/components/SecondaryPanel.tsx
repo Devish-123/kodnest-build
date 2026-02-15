@@ -20,11 +20,11 @@ const SecondaryPanel = ({ stepTitle, stepDescription, prompt }: SecondaryPanelPr
   return (
     <div className="flex flex-col gap-sp-3">
       <div>
-        <h3 className="font-heading text-lg font-medium">{stepTitle}</h3>
+        <h3 className="font-heading text-lg font-medium text-foreground">{stepTitle}</h3>
         <p className="mt-sp-1 text-sm text-muted-foreground">{stepDescription}</p>
       </div>
 
-      <div className="rounded-lg border bg-muted/50 p-sp-2">
+      <div className="rounded-md border border-border bg-muted/50 p-sp-2">
         <pre className="whitespace-pre-wrap text-sm leading-relaxed text-foreground font-body">
           {prompt}
         </pre>

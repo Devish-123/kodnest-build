@@ -126,12 +126,12 @@ const Proof = () => {
 
   return (
     <div className="flex flex-1 flex-col px-sp-4 py-sp-5">
-      <div className="mx-auto w-full max-w-3xl space-y-6">
+      <div className="mx-auto w-full max-w-3xl space-y-sp-4">
         <div className="flex flex-col items-center text-center">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
             <ShieldCheck className="h-6 w-6 text-muted-foreground" />
           </div>
-          <h2 className="mt-sp-3 text-2xl font-semibold">Proof & Artifacts</h2>
+          <h2 className="mt-sp-3 text-2xl font-semibold text-foreground">Proof & Artifacts</h2>
           <p className="mt-sp-1 max-w-xl text-muted-foreground">
             Capture your final proof, connect artifact links, and export the submission summary.
           </p>
@@ -139,36 +139,36 @@ const Proof = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Step Completion Summary</CardTitle>
+            <CardTitle className="text-base text-foreground">Step Completion Summary</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+          <CardContent className="space-y-sp-3">
+            <div className="flex flex-wrap items-center justify-between gap-sp-2">
               <div>
-                <p className="text-sm font-medium">Test checklist</p>
+                <p className="text-sm font-medium text-foreground">Test checklist</p>
                 <p className="text-sm text-muted-foreground">
                   {checkedCount} / {totalCount} complete
                 </p>
               </div>
-              <Badge variant="outline" className={allChecked ? "border-green-200 text-green-700" : "border-amber-200 text-amber-700"}>
+              <Badge variant="outline" className={allChecked ? "border-success/30 text-success" : "border-warning/30 text-warning"}>
                 {allChecked ? "Complete" : "In progress"}
               </Badge>
             </div>
             <Separator />
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-sp-2">
               <div>
-                <p className="text-sm font-medium">Artifact links</p>
+                <p className="text-sm font-medium text-foreground">Artifact links</p>
                 <p className="text-sm text-muted-foreground">
                   {validArtifactCount} / {ARTIFACT_FIELDS.length} valid
                 </p>
               </div>
-              <Badge variant="outline" className={allArtifactsValid ? "border-green-200 text-green-700" : "border-amber-200 text-amber-700"}>
+              <Badge variant="outline" className={allArtifactsValid ? "border-success/30 text-success" : "border-warning/30 text-warning"}>
                 {allArtifactsValid ? "Complete" : "Needs attention"}
               </Badge>
             </div>
             <Separator />
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-sp-2">
               <div>
-                <p className="text-sm font-medium">Ship status</p>
+                <p className="text-sm font-medium text-foreground">Ship status</p>
                 <p className="text-sm text-muted-foreground">
                   {shipReady
                     ? "All checks satisfied. Ready to ship."
@@ -177,7 +177,7 @@ const Proof = () => {
               </div>
               <Badge
                 variant="outline"
-                className={shipReady ? "border-green-200 text-green-700" : "border-amber-200 text-amber-700"}
+                className={shipReady ? "border-success/30 text-success" : "border-warning/30 text-warning"}
               >
                 {shipReady ? "Ready" : "Blocked"}
               </Badge>
@@ -187,26 +187,26 @@ const Proof = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="text-base flex items-center gap-2 text-foreground">
               <Link2 className="h-4 w-4 text-muted-foreground" />
               Artifact Links
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-sp-3">
             {ARTIFACT_FIELDS.map((field) => {
               const errorMessage = getArtifactError(field.id);
               const showError = Boolean(touched[field.id]) && Boolean(errorMessage);
               return (
-                <div key={field.id} className="space-y-2">
-                  <div className="flex items-center justify-between gap-2">
-                    <Label htmlFor={field.id}>{field.label}</Label>
+                <div key={field.id} className="space-y-sp-1">
+                  <div className="flex items-center justify-between gap-sp-1">
+                    <Label htmlFor={field.id} className="text-foreground">{field.label}</Label>
                     {isArtifactValid(field.id) ? (
-                      <span className="flex items-center gap-1 text-xs text-green-600">
+                      <span className="flex items-center gap-1 text-xs text-success">
                         <CheckCircle2 className="h-3.5 w-3.5" />
                         Verified
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1 text-xs text-amber-600">
+                      <span className="flex items-center gap-1 text-xs text-warning">
                         <AlertTriangle className="h-3.5 w-3.5" />
                         Required
                       </span>
@@ -220,16 +220,16 @@ const Proof = () => {
                     onBlur={() => markTouched(field.id)}
                   />
                   <p className="text-xs text-muted-foreground">{field.description}</p>
-                  {showError && <p className="text-xs text-amber-600">{errorMessage}</p>}
+                  {showError && <p className="text-xs text-warning">{errorMessage}</p>}
                 </div>
               );
             })}
           </CardContent>
         </Card>
 
-        <Card className={shipReady ? "border-green-200 bg-green-50/50" : "border-amber-200 bg-amber-50/50"}>
+        <Card className={shipReady ? "border-success/30 bg-success/5" : "border-warning/30 bg-warning/5"}>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="text-base flex items-center gap-2 text-foreground">
               <ClipboardCheck className="h-4 w-4" />
               Ship Readiness
             </CardTitle>
@@ -245,14 +245,14 @@ const Proof = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="text-base flex items-center gap-2 text-foreground">
               <Copy className="h-4 w-4 text-muted-foreground" />
               Final Submission Copy
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-sp-3">
             <Textarea value={submissionCopy} readOnly className="min-h-[180px]" />
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-sp-2">
               <p className="text-xs text-muted-foreground">
                 Use this summary in your final submission or release notes.
               </p>

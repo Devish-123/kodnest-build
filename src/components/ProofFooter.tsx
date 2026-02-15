@@ -6,30 +6,41 @@ interface ProofItem {
   checked: boolean;
 }
 
-const ProofFooter = () => {
-  const [items, setItems] = useState<ProofItem[]>([
+interface ProofFooterProps {
+  items?: ProofItem[];
+  onToggle?: (index: number) => void;
+}
+
+const ProofFooter = ({ items: externalItems, onToggle: externalOnToggle }: ProofFooterProps) => {
+  const [internalItems, setInternalItems] = useState<ProofItem[]>([
     { label: "UI Built", checked: false },
     { label: "Logic Working", checked: false },
     { label: "Test Passed", checked: false },
     { label: "Deployed", checked: false },
   ]);
 
-  const toggle = (index: number) => {
-    setItems((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, checked: !item.checked } : item
-      )
-    );
+  const items = externalItems || internalItems;
+  
+  const handleToggle = (index: number) => {
+    if (externalOnToggle) {
+      externalOnToggle(index);
+    } else {
+      setInternalItems((prev) =>
+        prev.map((item, i) =>
+          i === index ? { ...item, checked: !item.checked } : item
+        )
+      );
+    }
   };
 
   return (
-    <footer className="border-t px-sp-4 py-sp-3">
+    <footer className="border-t border-border bg-background px-sp-4 py-sp-3">
       <div className="flex items-center gap-sp-4">
         {items.map((item, i) => (
           <button
             key={item.label}
-            onClick={() => toggle(i)}
-            className="flex items-center gap-sp-1 text-sm transition-all duration-base ease-base hover:text-foreground"
+            onClick={() => handleToggle(i)}
+            className="flex items-center gap-sp-1 text-sm transition-all duration-180 ease-in-out hover:text-foreground"
           >
             {item.checked ? (
               <Check className="h-4 w-4 text-success" />

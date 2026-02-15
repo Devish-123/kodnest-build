@@ -136,8 +136,8 @@ const Proof = () => {
           <CardHeader>
             <CardTitle className="text-base text-foreground">Step Completion Summary</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-sp-3">
-            <div className="flex flex-wrap items-center justify-between gap-sp-2">
+          <CardContent className="space-y-sp-2">
+            <div className="flex flex-wrap items-center justify-between gap-sp-1">
               <div>
                 <p className="text-sm font-medium text-foreground">Test checklist</p>
                 <p className="text-sm text-muted-foreground">
@@ -149,7 +149,7 @@ const Proof = () => {
               </Badge>
             </div>
             <div className="h-px bg-border" />
-            <div className="flex flex-wrap items-center justify-between gap-sp-2">
+            <div className="flex flex-wrap items-center justify-between gap-sp-1">
               <div>
                 <p className="text-sm font-medium text-foreground">Artifact links</p>
                 <p className="text-sm text-muted-foreground">
@@ -161,7 +161,7 @@ const Proof = () => {
               </Badge>
             </div>
             <div className="h-px bg-border" />
-            <div className="flex flex-wrap items-center justify-between gap-sp-2">
+            <div className="flex flex-wrap items-center justify-between gap-sp-1">
               <div>
                 <p className="text-sm font-medium text-foreground">Ship status</p>
                 <p className="text-sm text-muted-foreground">
@@ -182,12 +182,12 @@ const Proof = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2 text-foreground">
+            <CardTitle className="text-base flex items-center gap-sp-1 text-foreground">
               <Link2 className="h-4 w-4 text-muted-foreground" />
               Artifact Links
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-sp-3">
+          <CardContent className="space-y-sp-2">
             {ARTIFACT_FIELDS.map((field) => {
               const errorMessage = getArtifactError(field.id);
               const showError = Boolean(touched[field.id]) && Boolean(errorMessage);
@@ -196,12 +196,12 @@ const Proof = () => {
                   <div className="flex items-center justify-between gap-sp-1">
                     <Label htmlFor={field.id} className="text-foreground">{field.label}</Label>
                     {isArtifactValid(field.id) ? (
-                      <span className="flex items-center gap-1 text-xs text-success">
+                      <span className="flex items-center gap-sp-0.5 text-xs text-success">
                         <CheckCircle2 className="h-3.5 w-3.5" />
                         Verified
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1 text-xs text-warning">
+                      <span className="flex items-center gap-sp-0.5 text-xs text-warning">
                         <AlertTriangle className="h-3.5 w-3.5" />
                         Required
                       </span>
@@ -224,12 +224,12 @@ const Proof = () => {
 
         <Card className={shipReady ? "border-success/30 bg-success/5" : "border-warning/30 bg-warning/5"}>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2 text-foreground">
+            <CardTitle className="text-base flex items-center gap-sp-1 text-foreground">
               <ClipboardCheck className="h-4 w-4" />
               Ship Readiness
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2 text-sm text-muted-foreground">
+          <CardContent className="space-y-sp-1 text-sm text-muted-foreground">
             {shipReady ? (
               <p>All requirements met. You can submit the final proof package.</p>
             ) : (
@@ -240,14 +240,14 @@ const Proof = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2 text-foreground">
+            <CardTitle className="text-base flex items-center gap-sp-1 text-foreground">
               <Copy className="h-4 w-4 text-muted-foreground" />
               Final Submission Copy
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-sp-3">
+          <CardContent className="space-y-sp-2">
             <Textarea value={submissionCopy} readOnly className="min-h-[180px]" />
-            <div className="flex flex-wrap items-center justify-between gap-sp-2">
+            <div className="flex flex-wrap items-center justify-between gap-sp-1">
               <p className="text-xs text-muted-foreground">
                 Use this summary in your final submission or release notes.
               </p>
@@ -260,31 +260,31 @@ const Proof = () => {
         </Card>
 
         {/* Proof Footer - Checklist and Proof Inputs */}
-        <div className="pt-sp-3 border-t border-border">
-          <div className="flex items-center gap-sp-2 mb-sp-3">
+        <div className="pt-sp-2 border-t border-border">
+          <div className="flex items-center gap-sp-1 mb-sp-2">
             <ListChecks className="h-5 w-5 text-muted-foreground" />
             <h3 className="font-heading text-lg font-semibold text-foreground">Proof Checklist</h3>
           </div>
-          <div className="grid gap-sp-3 sm:grid-cols-2">
+          <div className="grid gap-sp-2 sm:grid-cols-2">
             <Card className="bg-muted/30">
               <CardHeader>
                 <CardTitle className="text-sm text-foreground">Required Checks</CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-sp-2 text-sm">
-                  <li className="flex items-center gap-sp-2">
+                <ul className="space-y-sp-1 text-sm">
+                  <li className="flex items-center gap-sp-1">
                     <span className={`h-4 w-4 rounded-full border ${allChecked ? 'bg-success border-success' : 'border-muted-foreground'}`} />
                     <span className={allChecked ? 'text-foreground' : 'text-muted-foreground'}>
                       Test checklist complete
                     </span>
                   </li>
-                  <li className="flex items-center gap-sp-2">
+                  <li className="flex items-center gap-sp-1">
                     <span className={`h-4 w-4 rounded-full border ${allArtifactsValid ? 'bg-success border-success' : 'border-muted-foreground'}`} />
                     <span className={allArtifactsValid ? 'text-foreground' : 'text-muted-foreground'}>
                       All artifacts linked
                     </span>
                   </li>
-                  <li className="flex items-center gap-sp-2">
+                  <li className="flex items-center gap-sp-1">
                     <span className={`h-4 w-4 rounded-full border ${shipReady ? 'bg-success border-success' : 'border-muted-foreground'}`} />
                     <span className={shipReady ? 'text-foreground' : 'text-muted-foreground'}>
                       Ready to ship
@@ -298,11 +298,11 @@ const Proof = () => {
                 <CardTitle className="text-sm text-foreground">Quick Links</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-sp-2">
+                <div className="space-y-sp-1">
                   <p className="text-sm text-muted-foreground">
                     Access your test and ship pages for final validation.
                   </p>
-                  <div className="flex flex-wrap gap-sp-2">
+                  <div className="flex flex-wrap gap-sp-1">
                     <Button variant="outline" size="sm" asChild>
                       <a href="/jt/07-test">Test Checklist</a>
                     </Button>

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { Search, Bookmark, BookmarkCheck, ExternalLink, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Search, Bookmark, BookmarkCheck, ExternalLink, Eye, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,6 +17,8 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +28,8 @@ import {
 } from "@/components/ui/dialog";
 import { jobs } from "@/data/jobs";
 import { useSavedJobs } from "@/hooks/use-saved-jobs";
+import { usePreferences } from "@/hooks/use-preferences";
+import { computeMatchScore } from "@/lib/matchScore";
 import type { Job } from "@/types/job";
 
 const LOCATIONS = Array.from(new Set(jobs.map((j) => j.location))).sort();
@@ -34,6 +39,8 @@ const SOURCES: Job["source"][] = ["LinkedIn", "Naukri", "Indeed"];
 const SORT_OPTIONS = [
   { value: "latest", label: "Latest" },
   { value: "oldest", label: "Oldest" },
+  { value: "match", label: "Match Score" },
+  { value: "salary", label: "Salary" },
 ];
 
 function formatPostedDays(ago: number): string {
@@ -42,8 +49,28 @@ function formatPostedDays(ago: number): string {
   return `${ago} days ago`;
 }
 
+/** Extract first number from salaryRange for simple numeric sort (e.g. "10–18 LPA" -> 10, "₹40k–₹60k" -> 40). */
+function salarySortKey(salaryRange: string): number {
+  const match = salaryRange.match(/(\d+)/);
+  return match ? Number(match[1]) : 0;
+}
+
+function matchScoreBadgeVariant(score: number): "default" | "secondary" | "outline" {
+  if (score >= 80) return "default";
+  if (score >= 60) return "secondary";
+  return "outline";
+}
+
+function matchScoreBadgeClass(score: number): string {
+  if (score >= 80) return "bg-green-600 text-white border-green-600 hover:bg-green-600";
+  if (score >= 60) return "bg-amber-500 text-white border-amber-500 hover:bg-amber-500";
+  if (score >= 40) return "bg-muted text-muted-foreground";
+  return "bg-muted/60 text-muted-foreground border-muted-foreground/30";
+}
+
 function JobCard({
   job,
+  matchScore,
   onView,
   onSave,
   onUnsave,
@@ -51,6 +78,7 @@ function JobCard({
   isSaved,
 }: {
   job: Job;
+  matchScore: number;
   onView: () => void;
   onSave: () => void;
   onUnsave: () => void;
@@ -67,9 +95,17 @@ function JobCard({
             </h3>
             <p className="mt-0.5 text-sm text-muted-foreground">{job.company}</p>
           </div>
-          <Badge variant="secondary" className="shrink-0 text-xs">
-            {job.source}
-          </Badge>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <Badge
+              variant={matchScoreBadgeVariant(matchScore)}
+              className={`text-xs ${matchScoreBadgeClass(matchScore)}`}
+            >
+              {matchScore}
+            </Badge>
+            <Badge variant="secondary" className="text-xs">
+              {job.source}
+            </Badge>
+          </div>
         </div>
         <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
           <span>{job.location}</span>
@@ -111,41 +147,84 @@ function JobCard({
 }
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const { saveJob, unsaveJob, isSaved } = useSavedJobs();
+  const { preferences } = usePreferences();
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState<string>("all");
   const [mode, setMode] = useState<string>("all");
   const [experience, setExperience] = useState<string>("all");
   const [source, setSource] = useState<string>("all");
   const [sort, setSort] = useState<string>("latest");
+  const [showOnlyAboveThreshold, setShowOnlyAboveThreshold] = useState(false);
   const [viewJob, setViewJob] = useState<Job | null>(null);
 
+  const hasSetPreferences = useMemo(() => {
+    return (
+      preferences.roleKeywords.trim() !== "" ||
+      preferences.preferredLocations.length > 0 ||
+      preferences.preferredMode.length > 0 ||
+      preferences.experienceLevel !== "" ||
+      preferences.skills.trim() !== ""
+    );
+  }, [preferences]);
+
+  const jobsWithScores = useMemo(() => {
+    return jobs.map((job) => ({
+      job,
+      matchScore: computeMatchScore(job, preferences),
+    }));
+  }, [preferences]);
+
   const filteredAndSorted = useMemo(() => {
-    let list = [...jobs];
+    let list = [...jobsWithScores];
 
     const kw = keyword.trim().toLowerCase();
     if (kw) {
       list = list.filter(
-        (j) =>
+        ({ job: j }) =>
           j.title.toLowerCase().includes(kw) ||
           j.company.toLowerCase().includes(kw),
       );
     }
     if (location !== "all")
-      list = list.filter((j) => j.location === location);
-    if (mode !== "all") list = list.filter((j) => j.mode === mode);
+      list = list.filter(({ job: j }) => j.location === location);
+    if (mode !== "all") list = list.filter(({ job: j }) => j.mode === mode);
     if (experience !== "all")
-      list = list.filter((j) => j.experience === experience);
-    if (source !== "all") list = list.filter((j) => j.source === source);
+      list = list.filter(({ job: j }) => j.experience === experience);
+    if (source !== "all")
+      list = list.filter(({ job: j }) => j.source === source);
+
+    if (showOnlyAboveThreshold) {
+      const threshold = preferences.minMatchScore;
+      list = list.filter(({ matchScore }) => matchScore >= threshold);
+    }
 
     if (sort === "latest") {
-      list.sort((a, b) => a.postedDaysAgo - b.postedDaysAgo);
-    } else {
-      list.sort((a, b) => b.postedDaysAgo - a.postedDaysAgo);
+      list.sort((a, b) => a.job.postedDaysAgo - b.job.postedDaysAgo);
+    } else if (sort === "oldest") {
+      list.sort((a, b) => b.job.postedDaysAgo - a.job.postedDaysAgo);
+    } else if (sort === "match") {
+      list.sort((a, b) => b.matchScore - a.matchScore);
+    } else if (sort === "salary") {
+      list.sort(
+        (a, b) =>
+          salarySortKey(b.job.salaryRange) - salarySortKey(a.job.salaryRange),
+      );
     }
 
     return list;
-  }, [keyword, location, mode, experience, source, sort]);
+  }, [
+    jobsWithScores,
+    keyword,
+    location,
+    mode,
+    experience,
+    source,
+    showOnlyAboveThreshold,
+    preferences.minMatchScore,
+    sort,
+  ]);
 
   return (
     <div className="flex flex-1 flex-col px-sp-4 py-sp-5">
@@ -153,6 +232,23 @@ const Dashboard = () => {
         <h1 className="font-heading text-2xl font-semibold">
           Job Notification Tracker
         </h1>
+
+        {!hasSetPreferences && (
+          <div className="flex items-center justify-between gap-4 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm">
+            <p className="text-foreground">
+              Set your preferences to activate intelligent matching.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/settings")}
+              className="shrink-0"
+            >
+              <Settings className="h-4 w-4" />
+              Preferences
+            </Button>
+          </div>
+        )}
 
         {/* Filter bar */}
         <div className="flex flex-wrap items-end gap-3 rounded-lg border bg-card p-4">
@@ -231,6 +327,18 @@ const Dashboard = () => {
           </Select>
         </div>
 
+        {/* Show only matches toggle */}
+        <div className="flex items-center gap-2">
+          <Switch
+            id="show-only-matches"
+            checked={showOnlyAboveThreshold}
+            onCheckedChange={setShowOnlyAboveThreshold}
+          />
+          <Label htmlFor="show-only-matches" className="cursor-pointer text-sm">
+            Show only jobs above my threshold
+          </Label>
+        </div>
+
         {/* Results count */}
         <p className="text-sm text-muted-foreground">
           {filteredAndSorted.length} job{filteredAndSorted.length !== 1 ? "s" : ""} found
@@ -238,22 +346,30 @@ const Dashboard = () => {
 
         {/* Job grid */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredAndSorted.map((job) => (
+          {filteredAndSorted.map(({ job, matchScore }) => (
             <JobCard
               key={job.id}
               job={job}
+              matchScore={matchScore}
               onView={() => setViewJob(job)}
               onSave={() => saveJob(job.id)}
               onUnsave={() => unsaveJob(job.id)}
-              onApply={() => window.open(job.applyUrl, "_blank", "noopener,noreferrer")}
+              onApply={() =>
+                window.open(job.applyUrl, "_blank", "noopener,noreferrer")
+              }
               isSaved={isSaved(job.id)}
             />
           ))}
         </div>
 
         {filteredAndSorted.length === 0 && (
-          <div className="rounded-lg border border-dashed bg-muted/30 py-sp-5 text-center text-muted-foreground">
-            No jobs match your filters. Try adjusting the criteria.
+          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed bg-muted/30 py-sp-5 text-center">
+            <p className="font-medium text-foreground">
+              No roles match your criteria.
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Adjust filters or lower threshold.
+            </p>
           </div>
         )}
       </div>

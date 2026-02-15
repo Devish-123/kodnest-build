@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,13 +11,75 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { jobs } from "@/data/jobs";
+import { usePreferences } from "@/hooks/use-preferences";
+import type { UserPreferences } from "@/types/preferences";
+import type { JobMode, JobExperience } from "@/types/job";
+const LOCATIONS = Array.from(new Set(jobs.map((j) => j.location))).sort();
+const MODES: JobMode[] = ["Remote", "Hybrid", "Onsite"];
+const EXPERIENCES: JobExperience[] = ["Fresher", "0-1", "1-3", "3-5"];
 
 const Settings = () => {
+  const { preferences, save } = usePreferences();
+  const [roleKeywords, setRoleKeywords] = useState(preferences.roleKeywords);
+  const [preferredLocations, setPreferredLocations] = useState<string[]>(
+    preferences.preferredLocations,
+  );
+  const [preferredMode, setPreferredMode] = useState<JobMode[]>(
+    preferences.preferredMode,
+  );
+  const [experienceLevel, setExperienceLevel] = useState<
+    JobExperience | ""
+  >(preferences.experienceLevel);
+  const [skills, setSkills] = useState(preferences.skills);
+  const [minMatchScore, setMinMatchScore] = useState(preferences.minMatchScore);
+  const [locationsOpen, setLocationsOpen] = useState(false);
+
+  useEffect(() => {
+    setRoleKeywords(preferences.roleKeywords);
+    setPreferredLocations(preferences.preferredLocations);
+    setPreferredMode(preferences.preferredMode);
+    setExperienceLevel(preferences.experienceLevel);
+    setSkills(preferences.skills);
+    setMinMatchScore(preferences.minMatchScore);
+  }, [preferences]);
+
+  const toggleLocation = (loc: string) => {
+    setPreferredLocations((prev) =>
+      prev.includes(loc) ? prev.filter((l) => l !== loc) : [...prev, loc],
+    );
+  };
+
+  const toggleMode = (mode: JobMode) => {
+    setPreferredMode((prev) =>
+      prev.includes(mode) ? prev.filter((m) => m !== mode) : [...prev, mode],
+    );
+  };
+
+  const handleSave = () => {
+    const next: UserPreferences = {
+      roleKeywords: roleKeywords.trim(),
+      preferredLocations: [...preferredLocations],
+      preferredMode: [...preferredMode],
+      experienceLevel,
+      skills: skills.trim(),
+      minMatchScore,
+    };
+    save(next);
+  };
+
   return (
     <div className="mx-auto w-full max-w-2xl px-sp-4 py-sp-4">
-      <h1 className="text-3xl font-semibold">Preferences</h1>
+      <h1 className="font-heading text-3xl font-semibold">Preferences</h1>
       <p className="mt-sp-1 text-muted-foreground">
-        Define what you're looking for. Matching logic will be added in the next step.
+        Define what you're looking for. Your choices power intelligent matching on the Dashboard.
       </p>
 
       <Card className="mt-sp-3">
@@ -24,56 +88,126 @@ const Settings = () => {
         </CardHeader>
         <CardContent className="space-y-sp-3">
           <div className="space-y-sp-1">
-            <Label htmlFor="keywords">Role Keywords</Label>
+            <Label htmlFor="roleKeywords">Role Keywords</Label>
             <Input
-              id="keywords"
-              placeholder="e.g. Frontend Engineer, Product Designer"
+              id="roleKeywords"
+              placeholder="e.g. SDE Intern, React Developer, Backend"
+              value={roleKeywords}
+              onChange={(e) => setRoleKeywords(e.target.value)}
             />
+            <p className="text-xs text-muted-foreground">
+              Comma-separated. Used to match job title and description.
+            </p>
           </div>
 
           <div className="space-y-sp-1">
-            <Label htmlFor="locations">Preferred Locations</Label>
-            <Input
-              id="locations"
-              placeholder="e.g. Bangalore, Mumbai, Delhi"
-            />
+            <Label>Preferred Locations</Label>
+            <Popover open={locationsOpen} onOpenChange={setLocationsOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-between font-normal"
+                >
+                  <span className="truncate">
+                    {preferredLocations.length === 0
+                      ? "Select locations..."
+                      : `${preferredLocations.length} selected`}
+                  </span>
+                  <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-full min-w-[var(--radix-popover-trigger-width)] p-2" align="start">
+                <div className="max-h-60 overflow-y-auto space-y-1">
+                  {LOCATIONS.map((loc) => (
+                    <label
+                      key={loc}
+                      className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-accent"
+                    >
+                      <Checkbox
+                        checked={preferredLocations.includes(loc)}
+                        onCheckedChange={() => toggleLocation(loc)}
+                      />
+                      {loc}
+                    </label>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
-          <div className="space-y-sp-1">
-            <Label htmlFor="mode">Mode</Label>
-            <Select>
-              <SelectTrigger id="mode">
-                <SelectValue placeholder="Select work mode" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="remote">Remote</SelectItem>
-                <SelectItem value="hybrid">Hybrid</SelectItem>
-                <SelectItem value="onsite">Onsite</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="space-y-2">
+            <Label>Preferred Mode</Label>
+            <div className="flex flex-wrap gap-4">
+              {MODES.map((mode) => (
+                <label
+                  key={mode}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <Checkbox
+                    checked={preferredMode.includes(mode)}
+                    onCheckedChange={() => toggleMode(mode)}
+                  />
+                  <span className="text-sm">{mode}</span>
+                </label>
+              ))}
+            </div>
           </div>
 
           <div className="space-y-sp-1">
             <Label htmlFor="experience">Experience Level</Label>
-            <Select>
+            <Select
+              value={experienceLevel || "all"}
+              onValueChange={(v) =>
+                setExperienceLevel(v === "all" ? "" : (v as JobExperience))
+              }
+            >
               <SelectTrigger id="experience">
                 <SelectValue placeholder="Select experience level" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="fresher">Fresher</SelectItem>
-                <SelectItem value="junior">Junior (1–3 yrs)</SelectItem>
-                <SelectItem value="mid">Mid (3–6 yrs)</SelectItem>
-                <SelectItem value="senior">Senior (6+ yrs)</SelectItem>
+                <SelectItem value="all">Any</SelectItem>
+                {EXPERIENCES.map((e) => (
+                  <SelectItem key={e} value={e}>
+                    {e}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
-          <Button className="mt-sp-2 w-full" disabled>
+          <div className="space-y-sp-1">
+            <Label htmlFor="skills">Skills</Label>
+            <Input
+              id="skills"
+              placeholder="e.g. React, Java, Python, SQL"
+              value={skills}
+              onChange={(e) => setSkills(e.target.value)}
+            />
+            <p className="text-xs text-muted-foreground">
+              Comma-separated. Match against job skills.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="minMatchScore">
+              Minimum match score: {minMatchScore}
+            </Label>
+            <Slider
+              id="minMatchScore"
+              min={0}
+              max={100}
+              step={5}
+              value={[minMatchScore]}
+              onValueChange={([v]) => setMinMatchScore(v ?? 40)}
+            />
+            <p className="text-xs text-muted-foreground">
+              Show only jobs above this score when "Show only matches" is on (0–100, default 40).
+            </p>
+          </div>
+
+          <Button className="mt-sp-2 w-full" onClick={handleSave}>
             Save Preferences
           </Button>
-          <p className="text-center text-xs text-muted-foreground">
-            Save functionality will be enabled in a later step.
-          </p>
         </CardContent>
       </Card>
     </div>

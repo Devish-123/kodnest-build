@@ -5,50 +5,51 @@
 @layer base {
   :root {
     /* KodNest Premium — Calm, Intentional, Coherent */
-    --background: 40 14% 96%;
-    --foreground: 0 0% 7%;
+    /* 4-Color Core Palette: Background, Text, Accent (dark red), Muted */
+    --background: 40 18% 95%;      /* #F7F6F3 - warm off-white */
+    --foreground: 0 0% 7%;          /* #111111 - near black */
 
-    --card: 40 14% 98%;
-    --card-foreground: 0 0% 7%;
+    /* Primary accent - dark red */
+    --primary: 0 100% 27%;          /* #8B0000 - dark red */
+    --primary-foreground: 40 18% 95%;
 
-    --popover: 40 14% 98%;
-    --popover-foreground: 0 0% 7%;
-
-    --primary: 0 100% 27%;
-    --primary-foreground: 40 14% 96%;
-
-    --secondary: 40 10% 91%;
+    /* Secondary - neutral tone from background */
+    --secondary: 40 12% 90%;
     --secondary-foreground: 0 0% 7%;
 
-    --muted: 40 10% 93%;
+    /* Muted - soft gray */
+    --muted: 40 10% 88%;
     --muted-foreground: 0 0% 40%;
 
-    --accent: 40 10% 91%;
+    /* Accent - uses primary for emphasis */
+    --accent: 40 12% 90%;
     --accent-foreground: 0 0% 7%;
 
-    --destructive: 0 72% 45%;
-    --destructive-foreground: 40 14% 96%;
+    /* Card & Popover */
+    --card: 40 18% 97%;
+    --card-foreground: 0 0% 7%;
+    --popover: 40 18% 97%;
+    --popover-foreground: 0 0% 7%;
 
-    --success: 140 25% 42%;
-    --success-foreground: 40 14% 96%;
-
-    --warning: 40 65% 50%;
-    --warning-foreground: 0 0% 7%;
-
-    --border: 40 10% 86%;
-    --input: 40 10% 86%;
+    /* Border & Input */
+    --border: 40 12% 82%;
+    --input: 40 12% 82%;
     --ring: 0 100% 27%;
 
-    --radius: 6px;
+    /* Success & Warning - muted derivations of the 4-color rule */
+    /* Success: muted green tone */
+    --success: 140 20% 35%;
+    --success-foreground: 0 0% 100%;
+    /* Warning: muted amber tone */
+    --warning: 40 50% 45%;
+    --warning-foreground: 0 0% 7%;
 
-    --sidebar-background: 40 14% 97%;
-    --sidebar-foreground: 0 0% 20%;
-    --sidebar-primary: 0 100% 27%;
-    --sidebar-primary-foreground: 40 14% 96%;
-    --sidebar-accent: 40 10% 93%;
-    --sidebar-accent-foreground: 0 0% 7%;
-    --sidebar-border: 40 10% 88%;
-    --sidebar-ring: 0 100% 27%;
+    /* Destructive - red, uses accent red */
+    --destructive: 0 60% 40%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Radius - consistent 6px */
+    --radius: 6px;
 
     /* Typography */
     --font-heading: 'Lora', Georgia, serif;
@@ -65,34 +66,39 @@
     --transition-base: 180ms ease-in-out;
   }
 
+  /* Dark mode - minimal dark version */
   .dark {
-    --background: 0 0% 7%;
-    --foreground: 40 14% 96%;
-    --card: 0 0% 10%;
-    --card-foreground: 40 14% 96%;
-    --popover: 0 0% 10%;
-    --popover-foreground: 40 14% 96%;
+    --background: 0 0% 8%;
+    --foreground: 40 18% 95%;
+
     --primary: 0 85% 40%;
-    --primary-foreground: 40 14% 96%;
+    --primary-foreground: 0 0% 100%;
+
     --secondary: 0 0% 15%;
-    --secondary-foreground: 40 14% 96%;
+    --secondary-foreground: 40 18% 95%;
+
     --muted: 0 0% 15%;
-    --muted-foreground: 40 10% 65%;
+    --muted-foreground: 0 0% 60%;
+
     --accent: 0 0% 15%;
-    --accent-foreground: 40 14% 96%;
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 40 14% 96%;
+    --accent-foreground: 40 18% 95%;
+
+    --card: 0 0% 10%;
+    --card-foreground: 40 18% 95%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 40 18% 95%;
+
     --border: 0 0% 18%;
     --input: 0 0% 18%;
     --ring: 0 85% 40%;
-    --sidebar-background: 0 0% 8%;
-    --sidebar-foreground: 40 10% 80%;
-    --sidebar-primary: 0 85% 40%;
-    --sidebar-primary-foreground: 40 14% 96%;
-    --sidebar-accent: 0 0% 13%;
-    --sidebar-accent-foreground: 40 14% 96%;
-    --sidebar-border: 0 0% 16%;
-    --sidebar-ring: 0 85% 40%;
+
+    --success: 140 30% 35%;
+    --success-foreground: 0 0% 100%;
+    --warning: 40 60% 45%;
+    --warning-foreground: 0 0% 7%;
+
+    --destructive: 0 60% 30%;
+    --destructive-foreground: 0 0% 100%;
   }
 }
 
@@ -133,6 +139,12 @@
 
   p {
     max-width: 720px;
+    line-height: 1.7;
+  }
+
+  /* Focus ring styles for accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
 }
 

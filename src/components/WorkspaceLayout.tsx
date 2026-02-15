@@ -7,9 +7,9 @@ interface WorkspaceLayoutProps {
 
 const WorkspaceLayout = ({ primary, secondary }: WorkspaceLayoutProps) => {
   return (
-    <div className="flex flex-1 gap-sp-3 px-sp-4 pb-sp-4">
-      <main className="flex-[7] min-w-0">{primary}</main>
-      <aside className="flex-[3] min-w-0">{secondary}</aside>
+    <div className="flex flex-1 gap-sp-4 px-sp-4 pb-sp-4">
+      <main className="flex-[70%] min-w-0">{primary}</main>
+      <aside className="flex-[30%] min-w-0">{secondary}</aside>
     </div>
   );
 };

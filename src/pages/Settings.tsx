@@ -22,6 +22,7 @@ import { jobs } from "@/data/jobs";
 import { usePreferences } from "@/hooks/use-preferences";
 import type { UserPreferences } from "@/types/preferences";
 import type { JobMode, JobExperience } from "@/types/job";
+
 const LOCATIONS = Array.from(new Set(jobs.map((j) => j.location))).sort();
 const MODES: JobMode[] = ["Remote", "Hybrid", "Onsite"];
 const EXPERIENCES: JobExperience[] = ["Fresher", "0-1", "1-3", "3-5"];
@@ -77,16 +78,18 @@ const Settings = () => {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-sp-4 py-sp-4">
-      <h1 className="font-heading text-3xl font-semibold">Preferences</h1>
-      <p className="mt-sp-1 text-muted-foreground">
-        Define what you're looking for. Your choices power intelligent matching on the Dashboard.
-      </p>
+      <div className="flex flex-col gap-sp-1">
+        <h1 className="font-heading text-3xl font-semibold text-foreground">Preferences</h1>
+        <p className="text-muted-foreground">
+          Define what you're looking for. Your choices power intelligent matching on the Dashboard.
+        </p>
+      </div>
 
       <Card className="mt-sp-3">
         <CardHeader>
-          <CardTitle className="text-lg">Job Criteria</CardTitle>
+          <CardTitle className="text-lg text-foreground">Job Criteria</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-sp-3">
+        <CardContent className="space-y-sp-4">
           <div className="space-y-sp-1">
             <Label htmlFor="roleKeywords">Role Keywords</Label>
             <Input
@@ -137,7 +140,7 @@ const Settings = () => {
 
           <div className="space-y-2">
             <Label>Preferred Mode</Label>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-sp-3">
               {MODES.map((mode) => (
                 <label
                   key={mode}

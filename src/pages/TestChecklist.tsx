@@ -21,12 +21,12 @@ const TestChecklist = () => {
   return (
     <div className="flex flex-1 flex-col px-sp-4 py-sp-5">
       <div className="mx-auto w-full max-w-2xl">
-        <div className="mb-sp-4 flex items-center gap-3">
+        <div className="mb-sp-4 flex items-center gap-sp-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
             <ClipboardList className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-semibold">Test Checklist</h1>
+            <h1 className="font-heading text-2xl font-semibold text-foreground">Test Checklist</h1>
             <p className="text-sm text-muted-foreground">
               Complete all tests before shipping
             </p>
@@ -34,22 +34,22 @@ const TestChecklist = () => {
         </div>
 
         <Card className="mb-sp-4">
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-sp-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-medium">Progress</CardTitle>
+              <CardTitle className="text-base font-medium text-foreground">Progress</CardTitle>
               <span className="text-sm font-medium text-muted-foreground">
                 {checkedCount} / {totalCount}
               </span>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-sp-3">
             <Progress value={progress} className="h-2" />
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-sp-1">
                 {allChecked ? (
                   <>
-                    <CheckCircle2 className="h-5 w-5 text-green-500" />
-                    <span className="text-sm font-medium text-green-600">
+                    <CheckCircle2 className="h-5 w-5 text-success" />
+                    <span className="text-sm font-medium text-success">
                       All tests passed
                     </span>
                   </>
@@ -74,14 +74,14 @@ const TestChecklist = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Tests</CardTitle>
+            <CardTitle className="text-base text-foreground">Tests</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
+            <div className="space-y-sp-2">
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-start gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
+                  className="flex items-start gap-sp-2 rounded-md border border-border p-sp-2 transition-colors duration-180 ease-in-out hover:bg-muted/50"
                 >
                   <Checkbox
                     id={`test-${item.id}`}
@@ -91,7 +91,7 @@ const TestChecklist = () => {
                   />
                   <label
                     htmlFor={`test-${item.id}`}
-                    className="flex-1 cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    className="flex-1 cursor-pointer text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-foreground"
                   >
                     {item.label}
                   </label>

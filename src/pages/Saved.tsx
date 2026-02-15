@@ -50,7 +50,7 @@ function SavedJobCard({
   onApply: () => void;
 }) {
   return (
-    <Card className="flex flex-col transition-shadow hover:shadow-md">
+    <Card className="flex flex-col transition-all duration-180 ease-in-out hover:shadow-md">
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
@@ -99,7 +99,7 @@ function SavedJobCard({
           </ToggleGroup>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-wrap gap-2 border-t pt-4">
+      <CardFooter className="flex flex-wrap gap-2 border-t border-border pt-sp-3">
         <Button variant="outline" size="sm" onClick={onView}>
           <Eye className="h-4 w-4" />
           View
@@ -135,7 +135,7 @@ const Saved = () => {
           <div className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-primary/30 bg-primary/5">
             <Bookmark className="h-10 w-10 text-primary/60" />
           </div>
-          <h2 className="mt-sp-4 font-heading text-2xl font-semibold">
+          <h2 className="mt-sp-4 font-heading text-2xl font-semibold text-foreground">
             No saved jobs yet
           </h2>
           <p className="mt-sp-2 text-muted-foreground leading-relaxed">
@@ -157,12 +157,14 @@ const Saved = () => {
   return (
     <div className="flex flex-1 flex-col px-sp-4 py-sp-5">
       <div className="mx-auto w-full max-w-5xl space-y-sp-4">
-        <h1 className="font-heading text-2xl font-semibold">Saved jobs</h1>
-        <p className="text-sm text-muted-foreground">
-          {savedJobs.length} job{savedJobs.length !== 1 ? "s" : ""} saved
-        </p>
+        <div className="flex flex-col gap-sp-1">
+          <h1 className="font-heading text-2xl font-semibold text-foreground">Saved jobs</h1>
+          <p className="text-sm text-muted-foreground">
+            {savedJobs.length} job{savedJobs.length !== 1 ? "s" : ""} saved
+          </p>
+        </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-sp-3 sm:grid-cols-2 lg:grid-cols-3">
           {savedJobs.map((job) => (
             <SavedJobCard
               key={job.id}

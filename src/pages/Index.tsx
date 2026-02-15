@@ -8,10 +8,10 @@ const Index = () => {
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-sp-4 py-sp-5">
       <div className="max-w-2xl text-center">
-        <h1 className="text-5xl font-semibold leading-tight md:text-6xl">
+        <h1 className="font-heading text-4xl font-semibold leading-tight md:text-5xl text-foreground">
           Stop Missing The Right Jobs.
         </h1>
-        <p className="mx-auto mt-sp-3 max-w-lg text-lg text-muted-foreground">
+        <p className="mx-auto mt-sp-3 text-lg text-muted-foreground">
           Precision-matched job discovery delivered daily at 9AM.
         </p>
         <Button

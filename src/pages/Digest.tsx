@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import { usePreferences } from "@/hooks/use-preferences";
+import { useJobStatus, type JobStatus } from "@/hooks/use-job-status";
 import { jobs } from "@/data/jobs";
 import { computeMatchScore } from "@/lib/matchScore";
+import { getStatusBadgeClass, formatStatusDate } from "@/lib/status-utils";
 import type { Job } from "@/types/job";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Mail, Copy, RefreshCw, Briefcase, MapPin, Building2, Sparkles } from "lucide-react";
+import { Mail, Copy, RefreshCw, Briefcase, MapPin, Building2, Sparkles, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 
@@ -16,6 +18,7 @@ type DigestJob = Job & { matchScore: number };
 
 const Digest = () => {
   const { preferences, hasPreferences } = usePreferences();
+  const { recentUpdates } = useJobStatus();
   const [digest, setDigest] = useState<DigestJob[] | null>(null);
   const [generatedDate, setGeneratedDate] = useState<string>("");
 
@@ -283,13 +286,60 @@ const Digest = () => {
             </div>
           </ScrollArea>
         )}
-        
+
         <div className="bg-muted/30 p-4 border-t text-center">
            <p className="text-xs text-muted-foreground">
              Demo Mode: This digest was generated based on your preferences. Jobs are simulated for demonstration purposes.
            </p>
         </div>
       </div>
+
+      {/* Recent Status Updates Section */}
+      {recentUpdates.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              Recent Status Updates
+            </CardTitle>
+            <CardDescription>
+              Track your recent job application status changes
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {recentUpdates.map((update) => {
+                const job = jobs.find((j) => j.id === update.jobId);
+                if (!job) return null;
+
+                return (
+                  <div
+                    key={`${update.jobId}-${update.changedAt}`}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-lg border p-3 bg-card"
+                  >
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-medium text-sm">{job.title}</h4>
+                        <Badge
+                          className={`text-xs ${getStatusBadgeClass(update.status)}`}
+                        >
+                          {update.status}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {job.company} · {job.location}
+                      </p>
+                    </div>
+                    <div className="text-xs text-muted-foreground sm:text-right">
+                      {formatStatusDate(update.changedAt)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

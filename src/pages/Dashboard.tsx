@@ -26,16 +26,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group";
 import { jobs } from "@/data/jobs";
 import { useSavedJobs } from "@/hooks/use-saved-jobs";
 import { usePreferences } from "@/hooks/use-preferences";
+import { useJobStatus, type JobStatus } from "@/hooks/use-job-status";
 import { computeMatchScore } from "@/lib/matchScore";
+import { getStatusToggleClass } from "@/lib/status-utils";
+import { toast } from "sonner";
 import type { Job } from "@/types/job";
 
 const LOCATIONS = Array.from(new Set(jobs.map((j) => j.location))).sort();
 const MODES: Job["mode"][] = ["Remote", "Hybrid", "Onsite"];
 const EXPERIENCES: Job["experience"][] = ["Fresher", "0-1", "1-3", "3-5"];
 const SOURCES: Job["source"][] = ["LinkedIn", "Naukri", "Indeed"];
+const STATUSES: JobStatus[] = ["Not Applied", "Applied", "Rejected", "Selected"];
 const SORT_OPTIONS = [
   { value: "latest", label: "Latest" },
   { value: "oldest", label: "Oldest" },
@@ -71,6 +79,8 @@ function matchScoreBadgeClass(score: number): string {
 function JobCard({
   job,
   matchScore,
+  currentStatus,
+  onStatusChange,
   onView,
   onSave,
   onUnsave,
@@ -79,6 +89,8 @@ function JobCard({
 }: {
   job: Job;
   matchScore: number;
+  currentStatus: JobStatus;
+  onStatusChange: (status: JobStatus) => void;
   onView: () => void;
   onSave: () => void;
   onUnsave: () => void;
@@ -120,6 +132,28 @@ function JobCard({
         <p className="text-xs text-muted-foreground">
           {formatPostedDays(job.postedDaysAgo)}
         </p>
+        <div className="pt-1">
+          <p className="mb-1.5 text-xs font-medium text-muted-foreground">Status</p>
+          <ToggleGroup
+            type="single"
+            value={currentStatus}
+            onValueChange={(value) => {
+              if (value) onStatusChange(value as JobStatus);
+            }}
+            className="flex-wrap"
+          >
+            {STATUSES.map((status) => (
+              <ToggleGroupItem
+                key={status}
+                value={status}
+                size="sm"
+                className={`h-7 px-2 text-xs ${getStatusToggleClass(status, currentStatus === status)}`}
+              >
+                {status}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </div>
       </CardContent>
       <CardFooter className="flex flex-wrap gap-2 border-t pt-4">
         <Button variant="outline" size="sm" onClick={onView}>
@@ -150,11 +184,13 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { saveJob, unsaveJob, isSaved } = useSavedJobs();
   const { preferences } = usePreferences();
+  const { getStatus, setStatus } = useJobStatus();
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState<string>("all");
   const [mode, setMode] = useState<string>("all");
   const [experience, setExperience] = useState<string>("all");
   const [source, setSource] = useState<string>("all");
+  const [status, setStatusFilter] = useState<string>("all");
   const [sort, setSort] = useState<string>("latest");
   const [showOnlyAboveThreshold, setShowOnlyAboveThreshold] = useState(false);
   const [viewJob, setViewJob] = useState<Job | null>(null);
@@ -194,6 +230,8 @@ const Dashboard = () => {
       list = list.filter(({ job: j }) => j.experience === experience);
     if (source !== "all")
       list = list.filter(({ job: j }) => j.source === source);
+    if (status !== "all")
+      list = list.filter(({ job: j }) => getStatus(j.id) === status);
 
     if (showOnlyAboveThreshold) {
       const threshold = preferences.minMatchScore;
@@ -221,6 +259,8 @@ const Dashboard = () => {
     mode,
     experience,
     source,
+    status,
+    getStatus,
     showOnlyAboveThreshold,
     preferences.minMatchScore,
     sort,
@@ -313,6 +353,19 @@ const Dashboard = () => {
               ))}
             </SelectContent>
           </Select>
+          <Select value={status} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[120px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All statuses</SelectItem>
+              {STATUSES.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select value={sort} onValueChange={setSort}>
             <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="Sort" />
@@ -351,6 +404,13 @@ const Dashboard = () => {
               key={job.id}
               job={job}
               matchScore={matchScore}
+              currentStatus={getStatus(job.id)}
+              onStatusChange={(newStatus) => {
+                setStatus(job.id, newStatus);
+                if (newStatus !== "Not Applied") {
+                  toast(`Status updated: ${newStatus}`);
+                }
+              }}
               onView={() => setViewJob(job)}
               onSave={() => saveJob(job.id)}
               onUnsave={() => unsaveJob(job.id)}

@@ -36,13 +36,13 @@ const TopBar = () => {
         </div>
 
         {/* Status Badge - Right */}
-        <div className="hidden md:flex items-center gap-sp-3">
-          <span className="inline-flex items-center rounded-full border border-success/30 bg-success/10 px-2.5 py-0.5 text-xs font-medium text-success">
+        <div className="hidden md:flex items-center gap-sp-2">
+          <span className="inline-flex items-center rounded-full border border-success/30 bg-success/10 px-2 py-0.5 text-xs font-medium text-success">
             Active
           </span>
-          
+
           {/* Desktop nav */}
-          <nav className="flex items-center gap-sp-2">
+          <nav className="flex items-center gap-sp-1">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -75,7 +75,7 @@ const TopBar = () => {
             <span className="text-xs text-muted-foreground uppercase tracking-wider">
               Build System
             </span>
-            <span className="inline-flex items-center rounded-full border border-success/30 bg-success/10 px-2.5 py-0.5 text-xs font-medium text-success">
+            <span className="inline-flex items-center rounded-full border border-success/30 bg-success/10 px-2 py-0.5 text-xs font-medium text-success">
               Active
             </span>
           </div>

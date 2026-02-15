@@ -89,7 +89,7 @@ const Settings = () => {
         <CardHeader>
           <CardTitle className="text-lg text-foreground">Job Criteria</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-sp-4">
+        <CardContent className="space-y-sp-3">
           <div className="space-y-sp-1">
             <Label htmlFor="roleKeywords">Role Keywords</Label>
             <Input
@@ -119,12 +119,12 @@ const Settings = () => {
                   <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-full min-w-[var(--radix-popover-trigger-width)] p-2" align="start">
-                <div className="max-h-60 overflow-y-auto space-y-1">
+              <PopoverContent className="w-full min-w-[var(--radix-popover-trigger-width)] px-sp-1 py-sp-1" align="start">
+                <div className="max-h-60 overflow-y-auto space-y-sp-0.5">
                   {LOCATIONS.map((loc) => (
                     <label
                       key={loc}
-                      className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-accent"
+                      className="flex items-center gap-sp-1 rounded-md px-sp-1 py-sp-0.5 text-sm cursor-pointer hover:bg-accent"
                     >
                       <Checkbox
                         checked={preferredLocations.includes(loc)}
@@ -138,13 +138,13 @@ const Settings = () => {
             </Popover>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-sp-1">
             <Label>Preferred Mode</Label>
-            <div className="flex flex-wrap gap-sp-3">
+            <div className="flex flex-wrap gap-sp-2">
               {MODES.map((mode) => (
                 <label
                   key={mode}
-                  className="flex items-center gap-2 cursor-pointer"
+                  className="flex items-center gap-sp-1 cursor-pointer"
                 >
                   <Checkbox
                     checked={preferredMode.includes(mode)}
@@ -191,7 +191,7 @@ const Settings = () => {
             </p>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-sp-1">
             <Label htmlFor="minMatchScore">
               Minimum match score: {minMatchScore}
             </Label>
@@ -208,7 +208,7 @@ const Settings = () => {
             </p>
           </div>
 
-          <Button className="mt-sp-2 w-full" onClick={handleSave}>
+          <Button className="mt-sp-1 w-full" onClick={handleSave}>
             Save Preferences
           </Button>
         </CardContent>

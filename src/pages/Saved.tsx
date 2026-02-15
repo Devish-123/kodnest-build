@@ -50,20 +50,20 @@ function SavedJobCard({
   onApply: () => void;
 }) {
   return (
-    <Card className="flex flex-col transition-all duration-180 ease-in-out hover:shadow-md">
-      <CardHeader className="pb-2">
-        <div className="flex flex-wrap items-start justify-between gap-2">
+    <Card className="flex flex-col transition-all duration-kn-base ease-in-out hover:shadow-md">
+      <CardHeader className="pb-sp-1">
+        <div className="flex flex-wrap items-start justify-between gap-sp-1">
           <div>
             <h3 className="font-heading text-lg font-semibold leading-tight">
               {job.title}
             </h3>
-            <p className="mt-0.5 text-sm text-muted-foreground">{job.company}</p>
+            <p className="mt-sp-0.5 text-sm text-muted-foreground">{job.company}</p>
           </div>
           <Badge variant="secondary" className="shrink-0 text-xs">
             {job.source}
           </Badge>
         </div>
-        <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-muted-foreground">
+        <div className="flex flex-wrap gap-x-sp-2 gap-y-sp-0.5 text-sm text-muted-foreground">
           <span>{job.location}</span>
           <span>·</span>
           <span>{job.mode}</span>
@@ -71,13 +71,13 @@ function SavedJobCard({
           <span>{job.experience}</span>
         </div>
       </CardHeader>
-      <CardContent className="flex-1 space-y-2 pb-2">
+      <CardContent className="flex-1 space-y-sp-1 pb-sp-1">
         <p className="text-sm font-medium text-foreground">{job.salaryRange}</p>
         <p className="text-xs text-muted-foreground">
           {formatPostedDays(job.postedDaysAgo)}
         </p>
-        <div className="pt-1">
-          <p className="mb-1.5 text-xs font-medium text-muted-foreground">Status</p>
+        <div className="pt-sp-1">
+          <p className="mb-sp-1 text-xs font-medium text-muted-foreground">Status</p>
           <ToggleGroup
             type="single"
             value={currentStatus}
@@ -91,7 +91,7 @@ function SavedJobCard({
                 key={status}
                 value={status}
                 size="sm"
-                className={`h-7 px-2 text-xs ${getStatusToggleClass(status, currentStatus === status)}`}
+                className={`h-7 px-sp-1 text-xs ${getStatusToggleClass(status, currentStatus === status)}`}
               >
                 {status}
               </ToggleGroupItem>
@@ -99,7 +99,7 @@ function SavedJobCard({
           </ToggleGroup>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-wrap gap-2 border-t border-border pt-sp-3">
+      <CardFooter className="flex flex-wrap gap-sp-1 border-t border-border pt-sp-2">
         <Button variant="outline" size="sm" onClick={onView}>
           <Eye className="h-4 w-4" />
           View

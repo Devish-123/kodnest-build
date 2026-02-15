@@ -133,7 +133,7 @@ const Digest = () => {
       <div className="flex flex-1 flex-col items-center justify-center px-sp-4 py-sp-5">
         <Card className="w-full max-w-md text-center">
           <CardHeader>
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-sp-3">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-sp-2">
               <Briefcase className="h-6 w-6 text-muted-foreground" />
             </div>
             <CardTitle className="text-foreground">Personalize Your Digest</CardTitle>
@@ -142,7 +142,7 @@ const Digest = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground mb-sp-3 max-w-prose mx-auto">
+            <p className="text-sm text-muted-foreground mb-sp-2 max-w-prose mx-auto">
               Set your preferred roles, skills, and locations to get started.
             </p>
             <Button asChild className="w-full">
@@ -159,20 +159,20 @@ const Digest = () => {
     return (
       <div className="flex flex-1 flex-col items-center justify-center px-sp-4 py-sp-5">
         <div className="flex flex-col items-center text-center max-w-lg">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-sp-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-sp-3">
             <Sparkles className="h-8 w-8 text-primary" />
           </div>
-          <h2 className="font-heading text-3xl font-semibold tracking-tight mb-sp-3 text-foreground">Today's 9AM Digest</h2>
-          <p className="text-muted-foreground mb-sp-4 text-lg max-w-prose">
+          <h2 className="font-heading text-3xl font-semibold tracking-tight mb-sp-2 text-foreground">Today's 9AM Digest</h2>
+          <p className="text-muted-foreground mb-sp-3 text-lg max-w-prose">
             Ready to see your top 10 tailored job matches for {generatedDate}?
           </p>
-          
-          <Button size="lg" onClick={generateDigest} className="gap-sp-1 px-sp-4">
+
+          <Button size="lg" onClick={generateDigest} className="gap-sp-1 px-sp-3">
             <Mail className="h-5 w-5" />
             Generate Today's 9AM Digest (Simulated)
           </Button>
 
-          <p className="mt-sp-4 text-xs text-muted-foreground/60">
+          <p className="mt-sp-3 text-xs text-muted-foreground/60">
             Demo Mode: Daily 9AM trigger simulated manually.
           </p>
         </div>
@@ -202,50 +202,50 @@ const Digest = () => {
         />
 
         <div className="rounded-md border border-border bg-card shadow-sm overflow-hidden">
-          <div className="bg-muted/30 p-sp-4 border-b border-border text-center">
-            <h2 className="font-heading text-xl font-semibold mb-1 text-foreground">9AM Digest — {generatedDate}</h2>
+          <div className="bg-muted/30 px-sp-3 py-sp-2 border-b border-border text-center">
+            <h2 className="font-heading text-xl font-semibold mb-sp-0.5 text-foreground">9AM Digest — {generatedDate}</h2>
             <p className="text-sm text-muted-foreground">
-              {digest.length === 0 
-                ? "No matching roles today" 
+              {digest.length === 0
+                ? "No matching roles today"
                 : "Your top personalized job matches, delivered daily"}
             </p>
           </div>
 
           {digest.length === 0 ? (
-            <div className="p-sp-5 text-center space-y-sp-3">
+            <div className="px-sp-4 py-sp-4 text-center space-y-sp-2">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
                 <Briefcase className="h-8 w-8 text-muted-foreground" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-2 text-foreground">No matching roles today</h3>
+                <h3 className="text-lg font-semibold mb-sp-1 text-foreground">No matching roles today</h3>
                 <p className="text-sm text-muted-foreground max-w-md mx-auto">
                   We couldn't find any jobs matching your current preferences. Try broadening your criteria in settings.
                 </p>
               </div>
-              <Button variant="outline" asChild className="mt-sp-3">
+              <Button variant="outline" asChild className="mt-sp-2">
                 <Link to="/settings">Adjust Preferences</Link>
               </Button>
             </div>
           ) : (
             <ScrollArea className="h-[calc(100vh-280px)]">
-              <div className="p-sp-4 space-y-sp-3">
+              <div className="px-sp-3 py-sp-3 space-y-sp-2">
                 {digest.map((job, index) => {
                   return (
-                    <div key={job.id} className="group relative bg-background border border-border rounded-md p-sp-3 transition-all duration-180 ease-in-out hover:shadow-md hover:border-primary/20">
-                      <div className="absolute -left-3 top-sp-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold shadow-sm z-10">
+                    <div key={job.id} className="group relative bg-background border border-border rounded-md px-sp-2 py-sp-2 transition-all duration-kn-base ease-in-out hover:shadow-md hover:border-primary/20">
+                      <div className="absolute -left-sp-1 top-sp-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold shadow-sm z-10">
                         {index + 1}
                       </div>
-                      
-                      <div className="flex flex-col md:flex-row gap-sp-3 justify-between">
-                        <div className="space-y-2 flex-1">
-                          <div className="flex items-start justify-between md:justify-start gap-sp-2 flex-wrap">
+
+                      <div className="flex flex-col md:flex-row gap-sp-2 justify-between">
+                        <div className="space-y-sp-1 flex-1">
+                          <div className="flex items-start justify-between md:justify-start gap-sp-1 flex-wrap">
                              <h3 className="font-heading font-semibold text-lg leading-tight text-foreground">{job.title}</h3>
                              <Badge variant={job.matchScore >= 80 ? "default" : "secondary"} className="text-xs shrink-0">
                                {job.matchScore}% Match
                              </Badge>
                           </div>
-                          
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
+
+                          <div className="flex items-center gap-sp-1 text-sm text-muted-foreground flex-wrap">
                             <Building2 className="h-3.5 w-3.5" />
                             <span>{job.company}</span>
                             <span>·</span>
@@ -254,13 +254,13 @@ const Digest = () => {
                             <span>·</span>
                             <span>{job.mode}</span>
                           </div>
-                          
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+
+                          <div className="flex items-center gap-sp-1 text-sm text-muted-foreground">
                             <Briefcase className="h-3.5 w-3.5" />
                             <span>Experience: {job.experience} years</span>
                           </div>
-                          
-                          <div className="flex flex-wrap gap-1.5 pt-1">
+
+                          <div className="flex flex-wrap gap-sp-0.5 pt-sp-0.5">
                             {job.skills.slice(0, 5).map(skill => (
                               <Badge key={skill} variant="outline" className="text-xs font-normal">
                                 {skill}
@@ -272,7 +272,7 @@ const Digest = () => {
                           </div>
                         </div>
 
-                        <div className="flex flex-col items-start md:items-end justify-between gap-sp-2 md:min-w-[140px]">
+                        <div className="flex flex-col items-start md:items-end justify-between gap-sp-1 md:min-w-[140px]">
                            <div className="text-xs text-muted-foreground">
                              Posted {job.postedDaysAgo === 0 ? "today" : `${job.postedDaysAgo}d ago`}
                            </div>
@@ -288,7 +288,7 @@ const Digest = () => {
             </ScrollArea>
           )}
 
-          <div className="bg-muted/30 p-sp-3 border-t border-border text-center">
+          <div className="bg-muted/30 px-sp-2 py-sp-2 border-t border-border text-center">
              <p className="text-xs text-muted-foreground">
                Demo Mode: This digest was generated based on your preferences. Jobs are simulated for demonstration purposes.
              </p>
@@ -299,7 +299,7 @@ const Digest = () => {
         {recentUpdates.length > 0 && (
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-foreground">
+              <CardTitle className="flex items-center gap-sp-1 text-foreground">
                 <Clock className="h-5 w-5" />
                 Recent Status Updates
               </CardTitle>
@@ -308,7 +308,7 @@ const Digest = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-sp-2">
+              <div className="space-y-sp-1">
                 {recentUpdates.map((update) => {
                   const job = jobs.find((j) => j.id === update.jobId);
                   if (!job) return null;
@@ -316,10 +316,10 @@ const Digest = () => {
                   return (
                     <div
                       key={`${update.jobId}-${update.changedAt}`}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-md border border-border p-sp-2 bg-card"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-sp-1 rounded-md border border-border px-sp-1 py-sp-1 bg-card"
                     >
-                      <div className="flex-1 space-y-1">
-                        <div className="flex items-center gap-2">
+                      <div className="flex-1 space-y-sp-0.5">
+                        <div className="flex items-center gap-sp-1">
                           <h4 className="font-medium text-sm text-foreground">{job.title}</h4>
                           <Badge
                             className={`text-xs ${getStatusBadgeClass(update.status)}`}

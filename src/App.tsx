@@ -4,8 +4,15 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "./layouts/AppLayout";
+import DashboardShell from "./layouts/DashboardShell";
+import LandingPage from "./pages/LandingPage";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import DashboardHome from "./pages/DashboardHome";
+import Practice from "./pages/Practice";
+import Assessments from "./pages/Assessments";
+import Resources from "./pages/Resources";
+import Profile from "./pages/Profile";
 import Saved from "./pages/Saved";
 import Digest from "./pages/Digest";
 import Settings from "./pages/Settings";
@@ -23,9 +30,13 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Landing Page - No Layout */}
+          <Route path="/" element={<LandingPage />} />
+          
+          {/* Legacy Routes - Keep for compatibility */}
           <Route element={<AppLayout />}>
-            <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/legacy" element={<Index />} />
+            <Route path="/dashboard-old" element={<Dashboard />} />
             <Route path="/saved" element={<Saved />} />
             <Route path="/digest" element={<Digest />} />
             <Route path="/settings" element={<Settings />} />
@@ -34,6 +45,16 @@ const App = () => (
             <Route path="/jt/07-test" element={<TestChecklist />} />
             <Route path="/jt/08-ship" element={<Ship />} />
           </Route>
+          
+          {/* New Dashboard Routes with Shell */}
+          <Route element={<DashboardShell />}>
+            <Route path="/dashboard" element={<DashboardHome />} />
+            <Route path="/practice" element={<Practice />} />
+            <Route path="/assessments" element={<Assessments />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

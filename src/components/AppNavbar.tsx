@@ -9,6 +9,8 @@ const navItems = [
   { label: "Digest", to: "/digest" },
   { label: "Settings", to: "/settings" },
   { label: "Proof", to: "/proof" },
+  { label: "Test", to: "/jt/07-test" },
+  { label: "Ship", to: "/jt/08-ship" },
 ];
 
 const AppNavbar = () => {

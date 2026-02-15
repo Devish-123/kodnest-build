@@ -16,8 +16,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/components/ui/toggle-group";
 import { jobs } from "@/data/jobs";
 import { useSavedJobs } from "@/hooks/use-saved-jobs";
+import { useJobStatus, type JobStatus, STATUSES } from "@/hooks/use-job-status";
+import { getStatusToggleClass } from "@/lib/status-utils";
+import { toast } from "sonner";
 import type { Job } from "@/types/job";
 import { useState } from "react";
 
@@ -29,11 +36,15 @@ function formatPostedDays(ago: number): string {
 
 function SavedJobCard({
   job,
+  currentStatus,
+  onStatusChange,
   onView,
   onRemove,
   onApply,
 }: {
   job: Job;
+  currentStatus: JobStatus;
+  onStatusChange: (status: JobStatus) => void;
   onView: () => void;
   onRemove: () => void;
   onApply: () => void;
@@ -65,6 +76,28 @@ function SavedJobCard({
         <p className="text-xs text-muted-foreground">
           {formatPostedDays(job.postedDaysAgo)}
         </p>
+        <div className="pt-1">
+          <p className="mb-1.5 text-xs font-medium text-muted-foreground">Status</p>
+          <ToggleGroup
+            type="single"
+            value={currentStatus}
+            onValueChange={(value) => {
+              if (value) onStatusChange(value as JobStatus);
+            }}
+            className="flex-wrap"
+          >
+            {STATUSES.map((status) => (
+              <ToggleGroupItem
+                key={status}
+                value={status}
+                size="sm"
+                className={`h-7 px-2 text-xs ${getStatusToggleClass(status, currentStatus === status)}`}
+              >
+                {status}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </div>
       </CardContent>
       <CardFooter className="flex flex-wrap gap-2 border-t pt-4">
         <Button variant="outline" size="sm" onClick={onView}>
@@ -87,6 +120,7 @@ function SavedJobCard({
 const Saved = () => {
   const navigate = useNavigate();
   const { savedIds, unsaveJob } = useSavedJobs();
+  const { getStatus, setStatus } = useJobStatus();
   const [viewJob, setViewJob] = useState<Job | null>(null);
 
   const savedJobs = useMemo(() => {
@@ -133,6 +167,13 @@ const Saved = () => {
             <SavedJobCard
               key={job.id}
               job={job}
+              currentStatus={getStatus(job.id)}
+              onStatusChange={(newStatus) => {
+                setStatus(job.id, newStatus);
+                if (newStatus !== "Not Applied") {
+                  toast(`Status updated: ${newStatus}`);
+                }
+              }}
               onView={() => setViewJob(job)}
               onRemove={() => unsaveJob(job.id)}
               onApply={() =>

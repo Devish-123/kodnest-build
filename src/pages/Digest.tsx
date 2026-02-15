@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { usePreferences } from "@/hooks/use-preferences";
-import { useJobStatus, type JobStatus } from "@/hooks/use-job-status";
+import { useJobStatus } from "@/hooks/use-job-status";
 import { jobs } from "@/data/jobs";
 import { computeMatchScore } from "@/lib/matchScore";
 import { getStatusBadgeClass, formatStatusDate } from "@/lib/status-utils";
 import type { Job } from "@/types/job";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Mail, Copy, RefreshCw, Briefcase, MapPin, Building2, Sparkles, Clock } from "lucide-react";
+import { Mail, Copy, Briefcase, MapPin, Building2, Sparkles, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import ContextHeader from "@/components/ContextHeader";
 
 type DigestJob = Job & { matchScore: number };
 
@@ -142,7 +142,7 @@ const Digest = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground mb-sp-3">
+            <p className="text-sm text-muted-foreground mb-sp-3 max-w-prose mx-auto">
               Set your preferred roles, skills, and locations to get started.
             </p>
             <Button asChild className="w-full">
@@ -162,12 +162,12 @@ const Digest = () => {
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-sp-4">
             <Sparkles className="h-8 w-8 text-primary" />
           </div>
-          <h2 className="text-3xl font-bold tracking-tight mb-sp-3 text-foreground">Today's 9AM Digest</h2>
-          <p className="text-muted-foreground mb-sp-4 text-lg">
+          <h2 className="font-heading text-3xl font-semibold tracking-tight mb-sp-3 text-foreground">Today's 9AM Digest</h2>
+          <p className="text-muted-foreground mb-sp-4 text-lg max-w-prose">
             Ready to see your top 10 tailored job matches for {generatedDate}?
           </p>
           
-          <Button size="lg" onClick={generateDigest} className="gap-2 px-sp-4">
+          <Button size="lg" onClick={generateDigest} className="gap-sp-1 px-sp-4">
             <Mail className="h-5 w-5" />
             Generate Today's 9AM Digest (Simulated)
           </Button>
@@ -182,24 +182,24 @@ const Digest = () => {
 
   // State 3: Digest View (including empty digest state)
   return (
-    <div className="flex flex-1 flex-col px-sp-4 py-sp-5">
+    <div className="flex flex-1 flex-col px-sp-4 py-sp-4">
       <div className="mx-auto w-full max-w-4xl space-y-sp-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-sp-3">
-          <div>
-            <h1 className="font-heading text-3xl font-semibold text-foreground">Your 9AM Job Digest</h1>
-            <p className="text-muted-foreground">Daily personalized matches — {generatedDate}</p>
-          </div>
-          <div className="flex gap-sp-2">
-            <Button variant="outline" onClick={handleCopy} className="gap-2">
-              <Copy className="h-4 w-4" />
-              Copy
-            </Button>
-            <Button variant="default" onClick={handleEmail} className="gap-2">
-              <Mail className="h-4 w-4" />
-              Email Draft
-            </Button>
-          </div>
-        </div>
+        <ContextHeader
+          title="Your 9AM Job Digest"
+          description={`Daily personalized matches — ${generatedDate}`}
+          actions={
+            <>
+              <Button variant="outline" onClick={handleCopy} className="gap-sp-1">
+                <Copy className="h-4 w-4" />
+                Copy
+              </Button>
+              <Button variant="default" onClick={handleEmail} className="gap-sp-1">
+                <Mail className="h-4 w-4" />
+                Email Draft
+              </Button>
+            </>
+          }
+        />
 
         <div className="rounded-md border border-border bg-card shadow-sm overflow-hidden">
           <div className="bg-muted/30 p-sp-4 border-b border-border text-center">

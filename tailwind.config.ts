@@ -23,6 +23,14 @@ export default {
         body: ["DM Sans", "system-ui", "sans-serif"],
       },
       colors: {
+        /* KodNest Design System - 4 Color Palette */
+        kn: {
+          background: "hsl(var(--kn-background))",
+          text: "hsl(var(--kn-text))",
+          accent: "hsl(var(--kn-accent))",
+          muted: "hsl(var(--kn-muted))",
+        },
+        /* Semantic tokens */
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -66,6 +74,7 @@ export default {
         },
       },
       spacing: {
+        /* KodNest Spacing Scale */
         "sp-1": "8px",
         "sp-2": "16px",
         "sp-3": "24px",
@@ -73,15 +82,20 @@ export default {
         "sp-5": "64px",
       },
       borderRadius: {
+        /* Consistent radius system */
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
       transitionDuration: {
         base: "180ms",
+        "kn-fast": "150ms",
+        "kn-base": "180ms",
+        "kn-slow": "200ms",
       },
       transitionTimingFunction: {
         base: "ease-in-out",
+        "kn": "ease-in-out",
       },
       keyframes: {
         "accordion-down": {
@@ -96,6 +110,9 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      maxWidth: {
+        prose: "720px",
       },
     },
   },

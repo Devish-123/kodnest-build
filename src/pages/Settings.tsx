@@ -18,6 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import ContextHeader from "@/components/ContextHeader";
 import { jobs } from "@/data/jobs";
 import { usePreferences } from "@/hooks/use-preferences";
 import type { UserPreferences } from "@/types/preferences";
@@ -77,15 +78,14 @@ const Settings = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-sp-4 py-sp-4">
-      <div className="flex flex-col gap-sp-1">
-        <h1 className="font-heading text-3xl font-semibold text-foreground">Preferences</h1>
-        <p className="text-muted-foreground">
-          Define what you're looking for. Your choices power intelligent matching on the Dashboard.
-        </p>
-      </div>
+    <div className="flex flex-1 flex-col px-sp-4 py-sp-4">
+      <div className="mx-auto w-full max-w-2xl space-y-sp-4">
+        <ContextHeader
+          title="Preferences"
+          description="Define what you're looking for. Your choices power intelligent matching on the Dashboard."
+        />
 
-      <Card className="mt-sp-3">
+        <Card>
         <CardHeader>
           <CardTitle className="text-lg text-foreground">Job Criteria</CardTitle>
         </CardHeader>
@@ -212,7 +212,8 @@ const Settings = () => {
             Save Preferences
           </Button>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 };

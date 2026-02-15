@@ -1,14 +1,14 @@
 import { useMemo, useState } from "react";
-import { ShieldCheck, ClipboardCheck, Link2, Copy, CheckCircle2, AlertTriangle } from "lucide-react";
+import { ShieldCheck, ClipboardCheck, Link2, Copy, CheckCircle2, AlertTriangle, ListChecks } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useTestChecklist } from "@/hooks/use-test-checklist";
 import { toast } from "sonner";
+import ContextHeader from "@/components/ContextHeader";
 
 const STORAGE_KEY = "job-tracker-proof-artifacts";
 
@@ -125,17 +125,12 @@ const Proof = () => {
   };
 
   return (
-    <div className="flex flex-1 flex-col px-sp-4 py-sp-5">
+    <div className="flex flex-1 flex-col px-sp-4 py-sp-4">
       <div className="mx-auto w-full max-w-3xl space-y-sp-4">
-        <div className="flex flex-col items-center text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
-            <ShieldCheck className="h-6 w-6 text-muted-foreground" />
-          </div>
-          <h2 className="mt-sp-3 text-2xl font-semibold text-foreground">Proof & Artifacts</h2>
-          <p className="mt-sp-1 max-w-xl text-muted-foreground">
-            Capture your final proof, connect artifact links, and export the submission summary.
-          </p>
-        </div>
+        <ContextHeader
+          title="Proof & Artifacts"
+          description="Capture your final proof, connect artifact links, and export the submission summary."
+        />
 
         <Card>
           <CardHeader>
@@ -153,7 +148,7 @@ const Proof = () => {
                 {allChecked ? "Complete" : "In progress"}
               </Badge>
             </div>
-            <Separator />
+            <div className="h-px bg-border" />
             <div className="flex flex-wrap items-center justify-between gap-sp-2">
               <div>
                 <p className="text-sm font-medium text-foreground">Artifact links</p>
@@ -165,7 +160,7 @@ const Proof = () => {
                 {allArtifactsValid ? "Complete" : "Needs attention"}
               </Badge>
             </div>
-            <Separator />
+            <div className="h-px bg-border" />
             <div className="flex flex-wrap items-center justify-between gap-sp-2">
               <div>
                 <p className="text-sm font-medium text-foreground">Ship status</p>
@@ -256,13 +251,70 @@ const Proof = () => {
               <p className="text-xs text-muted-foreground">
                 Use this summary in your final submission or release notes.
               </p>
-              <Button onClick={handleCopy} className="gap-2">
+              <Button onClick={handleCopy} className="gap-sp-1">
                 <Copy className="h-4 w-4" />
                 Copy summary
               </Button>
             </div>
           </CardContent>
         </Card>
+
+        {/* Proof Footer - Checklist and Proof Inputs */}
+        <div className="pt-sp-3 border-t border-border">
+          <div className="flex items-center gap-sp-2 mb-sp-3">
+            <ListChecks className="h-5 w-5 text-muted-foreground" />
+            <h3 className="font-heading text-lg font-semibold text-foreground">Proof Checklist</h3>
+          </div>
+          <div className="grid gap-sp-3 sm:grid-cols-2">
+            <Card className="bg-muted/30">
+              <CardHeader>
+                <CardTitle className="text-sm text-foreground">Required Checks</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-sp-2 text-sm">
+                  <li className="flex items-center gap-sp-2">
+                    <span className={`h-4 w-4 rounded-full border ${allChecked ? 'bg-success border-success' : 'border-muted-foreground'}`} />
+                    <span className={allChecked ? 'text-foreground' : 'text-muted-foreground'}>
+                      Test checklist complete
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-sp-2">
+                    <span className={`h-4 w-4 rounded-full border ${allArtifactsValid ? 'bg-success border-success' : 'border-muted-foreground'}`} />
+                    <span className={allArtifactsValid ? 'text-foreground' : 'text-muted-foreground'}>
+                      All artifacts linked
+                    </span>
+                  </li>
+                  <li className="flex items-center gap-sp-2">
+                    <span className={`h-4 w-4 rounded-full border ${shipReady ? 'bg-success border-success' : 'border-muted-foreground'}`} />
+                    <span className={shipReady ? 'text-foreground' : 'text-muted-foreground'}>
+                      Ready to ship
+                    </span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+            <Card className="bg-muted/30">
+              <CardHeader>
+                <CardTitle className="text-sm text-foreground">Quick Links</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-sp-2">
+                  <p className="text-sm text-muted-foreground">
+                    Access your test and ship pages for final validation.
+                  </p>
+                  <div className="flex flex-wrap gap-sp-2">
+                    <Button variant="outline" size="sm" asChild>
+                      <a href="/jt/07-test">Test Checklist</a>
+                    </Button>
+                    <Button variant="outline" size="sm" asChild>
+                      <a href="/jt/08-ship">Ship Page</a>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );

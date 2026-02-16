@@ -1,0 +1,33 @@
+- generic [ref=e2]:
+  - region "Notifications (F8)":
+    - list
+  - region "Notifications alt+T"
+  - generic [ref=e3]:
+    - navigation [ref=e4]:
+      - generic [ref=e5]:
+        - link "KodNest" [ref=e6] [cursor=pointer]:
+          - /url: /
+        - list [ref=e7]:
+          - listitem [ref=e8]:
+            - link "Dashboard" [ref=e9] [cursor=pointer]:
+              - /url: /dashboard
+          - listitem [ref=e10]:
+            - link "Saved" [ref=e11] [cursor=pointer]:
+              - /url: /saved
+          - listitem [ref=e12]:
+            - link "Digest" [ref=e13] [cursor=pointer]:
+              - /url: /digest
+          - listitem [ref=e14]:
+            - link "Settings" [ref=e15] [cursor=pointer]:
+              - /url: /settings
+          - listitem [ref=e16]:
+            - link "Proof" [ref=e17] [cursor=pointer]:
+              - /url: /proof
+    - generic [ref=e19]:
+      - img [ref=e21]
+      - heading "Today's 9AM Digest" [level=2] [ref=e23]
+      - paragraph [ref=e24]: Ready to see your top 10 tailored job matches for 2026-02-15?
+      - button "Generate Today's 9AM Digest (Simulated)" [ref=e25] [cursor=pointer]:
+        - img
+        - text: Generate Today's 9AM Digest (Simulated)
+      - paragraph [ref=e26]: "Demo Mode: Daily 9AM trigger simulated manually."

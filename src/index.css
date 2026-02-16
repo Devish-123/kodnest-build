@@ -4,54 +4,56 @@
 
 @layer base {
   :root {
-    /* Placement Readiness Platform - Indigo/Purple Theme */
-    /* Primary: hsl(245, 58%, 51%) - Indigo */
+    /* KodNest Premium Build System — Calm, Intentional, Coherent */
+    /* Strict 4-Color Core Palette: Background, Text, Accent, Muted */
     
     /* Core Colors */
-    --kn-background: 260 25% 97%;     /* #F8F7FB - soft lavender white */
-    --kn-text: 245 30% 12%;           /* #16152A - deep indigo black */
-    --kn-accent: 245 58% 51%;         /* #4F46E5 - vibrant indigo */
-    --kn-muted: 245 20% 90%;          /* soft lavender gray */
+    --kn-background: 40 18% 95%;      /* #F7F6F3 - warm off-white */
+    --kn-text: 0 0% 7%;               /* #111111 - near black */
+    --kn-accent: 0 100% 27%;          /* #8B0000 - dark red */
+    --kn-muted: 40 10% 88%;           /* soft gray */
     
     /* Semantic Mappings */
     --background: var(--kn-background);
     --foreground: var(--kn-text);
 
-    /* Primary - indigo for CTAs */
+    /* Primary - accent for CTAs */
     --primary: var(--kn-accent);
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 40 18% 95%;
 
     /* Secondary - neutral for subtle elements */
-    --secondary: 245 30% 94%;
+    --secondary: 40 12% 90%;
     --secondary-foreground: var(--kn-text);
 
     /* Muted - for disabled/placeholder states */
     --muted: var(--kn-muted);
-    --muted-foreground: 245 15% 45%;
+    --muted-foreground: 0 0% 40%;
 
-    /* Accent - lighter indigo for emphasis */
-    --accent: 250 60% 96%;
+    /* Accent - same as secondary for subtle emphasis */
+    --accent: 40 12% 90%;
     --accent-foreground: var(--kn-text);
 
     /* Card & Popover - slightly elevated background */
-    --card: 0 0% 100%;
+    --card: 40 18% 97%;
     --card-foreground: var(--kn-text);
-    --popover: 0 0% 100%;
+    --popover: 40 18% 97%;
     --popover-foreground: var(--kn-text);
 
     /* Border & Input - subtle boundaries */
-    --border: 245 20% 88%;
-    --input: 245 20% 88%;
+    --border: 40 12% 82%;
+    --input: 40 12% 82%;
     --ring: var(--kn-accent);
 
-    /* Success & Warning */
-    --success: 145 55% 42%;
+    /* Success & Warning - derived from 4-color palette using opacity/tones */
+    /* Success: muted green (darkened to stay within neutral range) */
+    --success: 140 15% 30%;
     --success-foreground: 0 0% 100%;
-    --warning: 38 85% 50%;
+    /* Warning: muted amber/brown */
+    --warning: 35 45% 35%;
     --warning-foreground: 0 0% 100%;
 
-    /* Destructive */
-    --destructive: 0 72% 51%;
+    /* Destructive - same as accent (dark red) */
+    --destructive: var(--kn-accent);
     --destructive-foreground: 0 0% 100%;
 
     /* Radius - consistent 6px */
@@ -74,12 +76,12 @@
     --transition-slow: 200ms ease-in-out;
   }
 
-  /* Dark mode */
+  /* Dark mode - minimal dark version */
   .dark {
-    --kn-background: 245 25% 8%;
-    --kn-text: 245 20% 95%;
-    --kn-accent: 245 70% 58%;
-    --kn-muted: 245 20% 18%;
+    --kn-background: 0 0% 8%;
+    --kn-text: 40 18% 95%;
+    --kn-accent: 0 70% 35%;
+    --kn-muted: 0 0% 18%;
     
     --background: var(--kn-background);
     --foreground: var(--kn-text);
@@ -87,30 +89,30 @@
     --primary: var(--kn-accent);
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 245 20% 15%;
+    --secondary: 0 0% 15%;
     --secondary-foreground: var(--kn-text);
 
     --muted: var(--kn-muted);
-    --muted-foreground: 245 15% 60%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 245 25% 18%;
+    --accent: 0 0% 15%;
     --accent-foreground: var(--kn-text);
 
-    --card: 245 20% 10%;
+    --card: 0 0% 10%;
     --card-foreground: var(--kn-text);
-    --popover: 245 20% 10%;
+    --popover: 0 0% 10%;
     --popover-foreground: var(--kn-text);
 
-    --border: 245 20% 20%;
-    --input: 245 20% 20%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
     --ring: var(--kn-accent);
 
-    --success: 145 50% 45%;
+    --success: 140 20% 35%;
     --success-foreground: 0 0% 100%;
-    --warning: 38 70% 50%;
+    --warning: 35 50% 45%;
     --warning-foreground: 0 0% 7%;
 
-    --destructive: 0 65% 48%;
+    --destructive: var(--kn-accent);
     --destructive-foreground: 0 0% 100%;
   }
 }
